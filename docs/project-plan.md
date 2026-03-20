@@ -104,3 +104,12 @@ Day 10 - UI improvement, testing, screenshots, README update
 - Added booked seats API
 - Added cancel booking API
 - Added CORS for frontend connection
+
+## Creating frontend
+- Created React frontend using Vite
+- Installed axios and react-router-dom
+- Created frontend folder structure
+- Added api service file
+- Created HomePage
+- Connected frontend to backend route API
+- Displayed route list on UI
