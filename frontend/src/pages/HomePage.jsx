@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 
 function HomePage() {
   const [routes, setRoutes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchRoutes();
@@ -22,6 +24,10 @@ function HomePage() {
     }
   };
 
+  const handleViewSchedules = (routeId) => {
+    navigate(`/schedules/${routeId}`);
+  };
+
   return (
     <div className="page-container">
       <h1 className="title">Bus Seat Booking Application</h1>
@@ -36,7 +42,12 @@ function HomePage() {
             <h3>
               {route.fromCity} → {route.toCity}
             </h3>
-            <button className="primary-btn">View Schedules</button>
+            <button
+              className="primary-btn"
+              onClick={() => handleViewSchedules(route.id)}
+            >
+              View Schedules
+            </button>
           </div>
         ))}
       </div>

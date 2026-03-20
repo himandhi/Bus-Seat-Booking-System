@@ -113,3 +113,10 @@ Day 10 - UI improvement, testing, screenshots, README update
 - Created HomePage
 - Connected frontend to backend route API
 - Displayed route list on UI
+
+## Adding schedule page
+- Added schedule page
+- Added route-based navigation from home page
+- Used routeId from URL
+- Connected schedule page to backend API
+- Displayed schedules for selected route

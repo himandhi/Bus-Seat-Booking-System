@@ -1,60 +1,37 @@
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background-color: #f4f7fb;
-  color: #222;
-}
-
-.page-container {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 40px 20px;
-}
-
-.title {
-  text-align: center;
-  color: #1e3a8a;
-  margin-bottom: 10px;
-}
-
-.subtitle {
-  text-align: center;
-  margin-bottom: 30px;
-  color: #555;
-}
-
-.route-list {
+.schedule-list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 20px;
 }
 
-.route-card {
+.schedule-card {
   background: white;
   border-radius: 12px;
   padding: 20px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-.route-card h3 {
+.schedule-card h3 {
   margin-bottom: 15px;
   color: #1f2937;
 }
 
-.primary-btn {
-  background-color: #2563eb;
-  color: white;
+.secondary-btn {
+  background-color: #e5e7eb;
+  color: #111827;
   border: none;
   padding: 10px 16px;
   border-radius: 8px;
   cursor: pointer;
+  margin-bottom: 20px;
 }
 
-.primary-btn:hover {
-  background-color: #1d4ed8;
+.secondary-btn:hover {
+  background-color: #d1d5db;
 }
 
-.error-text {
-  color: red;
+.empty-text {
   text-align: center;
+  color: #666;
+  margin-top: 20px;
 }
