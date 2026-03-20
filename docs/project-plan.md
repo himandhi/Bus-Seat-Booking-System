@@ -83,3 +83,15 @@ Day 10 - UI improvement, testing, screenshots, README update
   - Validation
 - Connected backend to MySQL database
 - Backend test controller created
+
+## API Building
+- Created RouteService, ScheduleService, BookingService
+- Added BookingRequest DTO
+- Built APIs:
+  - GET /api/routes
+  - GET /api/schedules
+  - GET /api/schedules/route/{routeId}
+  - GET /api/bookings/schedule/{scheduleId}
+  - POST /api/bookings
+- Added seat duplicate checking
+- Added booking ID generation
