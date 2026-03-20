@@ -72,3 +72,14 @@ Day 10 - UI improvement, testing, screenshots, README update
 - Seat booking page
 - Booking success page
 - Admin page
+
+## Backend Setup
+- Spring Boot project created
+- Dependencies added:
+  - Spring Web
+  - Spring Data JPA
+  - MySQL Driver
+  - Lombok
+  - Validation
+- Connected backend to MySQL database
+- Backend test controller created
