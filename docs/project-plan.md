@@ -37,3 +37,38 @@ Day 7 - Seat layout and booking form
 Day 8 - Booking confirmation and validation
 Day 9 - Admin pages
 Day 10 - UI improvement, testing, screenshots, README update
+
+## Database Design
+
+### Table 1: routes
+- id
+- from_city
+- to_city
+
+### Table 2: schedules
+- id
+- route_id
+- travel_date
+- departure_time
+- bus_number
+- total_seats
+
+### Table 3: bookings
+- id
+- booking_id
+- passenger_name
+- phone_number
+- schedule_id
+- seat_number
+- status
+
+## Table Relationships
+- One route can have many schedules
+- One schedule can have many bookings
+
+## Main Pages
+- Home page
+- Schedule page
+- Seat booking page
+- Booking success page
+- Admin page
