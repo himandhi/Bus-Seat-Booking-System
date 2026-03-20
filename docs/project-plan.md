@@ -114,9 +114,20 @@ Day 10 - UI improvement, testing, screenshots, README update
 - Connected frontend to backend route API
 - Displayed route list on UI
 
-## Adding schedule page
+## Schedule page
 - Added schedule page
 - Added route-based navigation from home page
 - Used routeId from URL
 - Connected schedule page to backend API
 - Displayed schedules for selected route
+
+## Seat booking page
+- Added seat booking page
+- Added navigation from schedule page to seat page
+- Loaded booked seat numbers from backend
+- Displayed seat layout
+- Added seat colors:
+  - Green = available
+  - Red = booked
+  - Blue = selected
+- Added selected seat display

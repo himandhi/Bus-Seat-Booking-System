@@ -31,7 +31,7 @@ function SchedulePage() {
   };
 
   const handleBookNow = (scheduleId) => {
-    alert(`Next step: go to seat booking page for schedule ID ${scheduleId}`);
+    navigate(`/booking/${scheduleId}`);
   };
 
   return (
