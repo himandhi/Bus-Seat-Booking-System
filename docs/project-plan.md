@@ -95,3 +95,12 @@ Day 10 - UI improvement, testing, screenshots, README update
   - POST /api/bookings
 - Added seat duplicate checking
 - Added booking ID generation
+
+## Improved booking APIs
+- Improved booking API responses
+- Added BookingResponse and ApiResponse DTOs
+- Added custom exceptions
+- Added global exception handling
+- Added booked seats API
+- Added cancel booking API
+- Added CORS for frontend connection

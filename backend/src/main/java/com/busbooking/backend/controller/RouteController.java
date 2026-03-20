@@ -2,6 +2,7 @@ package com.busbooking.backend.controller;
 
 import com.busbooking.backend.entity.Route;
 import com.busbooking.backend.service.RouteService;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,6 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/routes")
+@CrossOrigin(origins = "http://localhost:3000")
 public class RouteController {
 
     private final RouteService routeService;
