@@ -4,6 +4,7 @@ import SchedulePage from "./pages/SchedulePage";
 import SeatBookingPage from "./pages/SeatBookingPage";
 import BookingSuccessPage from "./pages/BookingSuccessPage";
 import AdminBookingsPage from "./pages/AdminBookingsPage";
+import AdminSchedulesPage from "./pages/AdminSchedulesPage";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/booking/:scheduleId" element={<SeatBookingPage />} />
         <Route path="/booking-success" element={<BookingSuccessPage />} />
         <Route path="/admin/bookings" element={<AdminBookingsPage />} />
+        <Route path="/admin/schedules" element={<AdminSchedulesPage />} />
       </Routes>
     </BrowserRouter>
   );

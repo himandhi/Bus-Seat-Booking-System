@@ -1,7 +1,9 @@
 package com.busbooking.backend.controller;
 
+import com.busbooking.backend.dto.ScheduleRequest;
 import com.busbooking.backend.entity.Schedule;
 import com.busbooking.backend.service.ScheduleService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,5 +27,10 @@ public class ScheduleController {
     @GetMapping("/route/{routeId}")
     public List<Schedule> getSchedulesByRoute(@PathVariable Long routeId) {
         return scheduleService.getSchedulesByRoute(routeId);
+    }
+
+    @PostMapping
+    public Schedule createSchedule(@Valid @RequestBody ScheduleRequest scheduleRequest) {
+        return scheduleService.createSchedule(scheduleRequest);
     }
 }

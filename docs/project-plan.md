@@ -151,3 +151,12 @@ Day 10 - UI improvement, testing, screenshots, README update
 - Displayed all bookings in table format
 - Added cancel booking action
 - Refreshed booking list after cancellation
+
+## Improved general UI
+- Added backend API to create schedules
+- Created ScheduleRequest DTO
+- Added admin schedule creation page
+- Added route selection dropdown for admin
+- Added travel date, departure time, bus number, and total seats form
+- Added success and error messages
+- Improved general UI polish

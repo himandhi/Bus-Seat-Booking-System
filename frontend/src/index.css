@@ -34,6 +34,11 @@ body {
   border-radius: 12px;
   padding: 20px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: 0.2s ease;
+}
+
+.route-card:hover {
+  transform: translateY(-2px);
 }
 
 .route-card h3 {
@@ -48,10 +53,12 @@ body {
   padding: 10px 16px;
   border-radius: 8px;
   cursor: pointer;
+  transition: 0.2s ease;
 }
 
 .primary-btn:hover {
   background-color: #1d4ed8;
+  transform: translateY(-1px);
 }
 
 .error-text {
@@ -70,6 +77,11 @@ body {
   border-radius: 12px;
   padding: 20px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: 0.2s ease;
+}
+
+.schedule-card:hover {
+  transform: translateY(-2px);
 }
 
 .schedule-card h3 {
@@ -85,10 +97,12 @@ body {
   border-radius: 8px;
   cursor: pointer;
   margin-bottom: 20px;
+  transition: 0.2s ease;
 }
 
 .secondary-btn:hover {
   background-color: #d1d5db;
+  transform: translateY(-1px);
 }
 
 .empty-text {
@@ -103,6 +117,11 @@ body {
   padding: 20px;
   margin-bottom: 25px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: 0.2s ease;
+}
+
+.booking-info-card:hover {
+  transform: translateY(-2px);
 }
 
 .seat-legend {
@@ -174,6 +193,11 @@ body {
   max-width: 500px;
   margin-left: auto;
   margin-right: auto;
+  transition: 0.2s ease;
+}
+
+.booking-form:hover {
+  transform: translateY(-2px);
 }
 
 .booking-form h2 {
@@ -195,14 +219,17 @@ body {
   color: #374151;
 }
 
-.form-group input {
+.form-group input,
+.form-group select {
   padding: 12px;
   border: 1px solid #d1d5db;
   border-radius: 8px;
   font-size: 16px;
+  background: white;
 }
 
-.form-group input:focus {
+.form-group input:focus,
+.form-group select:focus {
   outline: none;
   border-color: #2563eb;
 }
@@ -231,6 +258,11 @@ body {
   padding: 30px;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
   text-align: center;
+  transition: 0.2s ease;
+}
+
+.success-page-card:hover {
+  transform: translateY(-2px);
 }
 
 .success-title {
@@ -261,7 +293,9 @@ body {
 .top-action-bar {
   display: flex;
   justify-content: center;
+  gap: 12px;
   margin-bottom: 25px;
+  flex-wrap: wrap;
 }
 
 .table-wrapper {
@@ -301,13 +335,38 @@ body {
   padding: 8px 12px;
   border-radius: 8px;
   cursor: pointer;
+  transition: 0.2s ease;
 }
 
 .cancel-btn:hover {
   background-color: #b91c1c;
+  transform: translateY(-1px);
 }
 
 .cancelled-label {
   color: #6b7280;
   font-weight: bold;
+}
+
+@media (max-width: 768px) {
+  .seat-grid {
+    grid-template-columns: repeat(4, 60px);
+    gap: 10px;
+  }
+
+  .seat {
+    width: 60px;
+    height: 45px;
+    font-size: 14px;
+  }
+
+  .page-container {
+    padding: 25px 15px;
+  }
+
+  .booking-table th,
+  .booking-table td {
+    padding: 10px;
+    font-size: 14px;
+  }
 }

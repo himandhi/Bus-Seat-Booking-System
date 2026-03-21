@@ -32,6 +32,10 @@ function HomePage() {
     navigate("/admin/bookings");
   };
 
+  const goToAdminSchedules = () => {
+    navigate("/admin/schedules");
+  };
+
   return (
     <div className="page-container">
       <h1 className="title">Bus Seat Booking Application</h1>
@@ -39,7 +43,10 @@ function HomePage() {
 
       <div className="top-action-bar">
         <button className="secondary-btn" onClick={goToAdminBookings}>
-          Go to Admin Bookings
+          Admin Bookings
+        </button>
+        <button className="secondary-btn" onClick={goToAdminSchedules}>
+          Add Schedule
         </button>
       </div>
 
