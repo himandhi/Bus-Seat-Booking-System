@@ -131,3 +131,11 @@ Day 10 - UI improvement, testing, screenshots, README update
   - Red = booked
   - Blue = selected
 - Added selected seat display
+
+## Passenger form
+- Added passenger form to seat booking page
+- Added passenger name and phone number inputs
+- Connected booking form to backend POST /api/bookings API
+- Added basic form validation
+- Displayed booking success message and booking ID
+- Refreshed booked seats after successful booking
