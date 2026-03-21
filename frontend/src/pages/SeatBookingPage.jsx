@@ -16,8 +16,6 @@ function SeatBookingPage() {
   const [loading, setLoading] = useState(true);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [error, setError] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
-  const [bookingId, setBookingId] = useState("");
 
   useEffect(() => {
     fetchScheduleDetails();
@@ -63,8 +61,6 @@ function SeatBookingPage() {
 
     setSelectedSeat(seatNumber);
     setError("");
-    setSuccessMessage("");
-    setBookingId("");
   };
 
   const validateForm = () => {
@@ -95,8 +91,6 @@ function SeatBookingPage() {
     e.preventDefault();
 
     setError("");
-    setSuccessMessage("");
-    setBookingId("");
 
     if (!validateForm()) return;
 
@@ -112,14 +106,11 @@ function SeatBookingPage() {
 
       const response = await api.post("/bookings", payload);
 
-      setSuccessMessage(response.data.message || "Booking created successfully.");
-      setBookingId(response.data.bookingId || "");
-
-      setPassengerName("");
-      setPhoneNumber("");
-      setSelectedSeat(null);
-
       await fetchBookedSeats();
+
+      navigate("/booking-success", {
+        state: response.data,
+      });
     } catch (err) {
       const message =
         err.response?.data?.message || "Failed to create booking.";
@@ -170,12 +161,6 @@ function SeatBookingPage() {
 
       {loading && <p>Loading seat layout...</p>}
       {error && <p className="error-text">{error}</p>}
-      {successMessage && (
-        <div className="success-box">
-          <h3>{successMessage}</h3>
-          {bookingId && <p><strong>Booking ID:</strong> {bookingId}</p>}
-        </div>
-      )}
 
       {schedule && (
         <div className="booking-info-card">

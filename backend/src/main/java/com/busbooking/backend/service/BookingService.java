@@ -25,6 +25,10 @@ public class BookingService {
         this.scheduleRepository = scheduleRepository;
     }
 
+    public List<Booking> getAllBookings() {
+        return bookingRepository.findAll();
+    }
+
     public List<Booking> getBookingsBySchedule(Long scheduleId) {
         return bookingRepository.findBySchedule_Id(scheduleId);
     }

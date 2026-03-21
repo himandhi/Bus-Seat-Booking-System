@@ -20,6 +20,11 @@ public class BookingController {
         this.bookingService = bookingService;
     }
 
+    @GetMapping
+    public List<Booking> getAllBookings() {
+        return bookingService.getAllBookings();
+    }
+
     @GetMapping("/schedule/{scheduleId}")
     public List<Booking> getBookingsBySchedule(@PathVariable Long scheduleId) {
         return bookingService.getBookingsBySchedule(scheduleId);

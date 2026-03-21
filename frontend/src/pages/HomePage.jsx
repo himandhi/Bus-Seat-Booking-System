@@ -28,10 +28,20 @@ function HomePage() {
     navigate(`/schedules/${routeId}`);
   };
 
+  const goToAdminBookings = () => {
+    navigate("/admin/bookings");
+  };
+
   return (
     <div className="page-container">
       <h1 className="title">Bus Seat Booking Application</h1>
       <p className="subtitle">Select a route to start booking your seat</p>
+
+      <div className="top-action-bar">
+        <button className="secondary-btn" onClick={goToAdminBookings}>
+          Go to Admin Bookings
+        </button>
+      </div>
 
       {loading && <p>Loading routes...</p>}
       {error && <p className="error-text">{error}</p>}

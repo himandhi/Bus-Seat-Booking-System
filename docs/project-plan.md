@@ -139,3 +139,15 @@ Day 10 - UI improvement, testing, screenshots, README update
 - Added basic form validation
 - Displayed booking success message and booking ID
 - Refreshed booked seats after successful booking
+
+### Booking Success Page
+- Created separate booking success page
+- Passed booking details through navigation state
+- Displayed booking confirmation details clearly
+
+### Admin Bookings Management
+- Added backend API to get all bookings
+- Created admin bookings page
+- Displayed all bookings in table format
+- Added cancel booking action
+- Refreshed booking list after cancellation
