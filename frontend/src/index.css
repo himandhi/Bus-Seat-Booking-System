@@ -450,3 +450,40 @@ body {
     flex-direction: column;
   }
 }
+
+.admin-action-group {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.reserve-btn {
+  background-color: #f59e0b;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s ease;
+  font-weight: 600;
+}
+
+.reserve-btn:hover {
+  background-color: #d97706;
+  transform: translateY(-1px);
+}
+
+.status-booked {
+  color: #2563eb;
+  font-weight: bold;
+}
+
+.status-reserved {
+  color: #d97706;
+  font-weight: bold;
+}
+
+.status-cancelled {
+  color: #6b7280;
+  font-weight: bold;
+}

@@ -44,4 +44,9 @@ public class BookingController {
     public BookingResponse cancelBooking(@PathVariable Long bookingId) {
         return bookingService.cancelBooking(bookingId);
     }
+
+    @PutMapping("/{bookingId}/reserve")
+    public BookingResponse reserveBooking(@PathVariable Long bookingId) {
+        return bookingService.reserveBooking(bookingId);
+    }
 }

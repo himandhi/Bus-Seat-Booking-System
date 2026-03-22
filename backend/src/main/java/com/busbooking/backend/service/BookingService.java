@@ -35,21 +35,24 @@ public class BookingService {
 
     public List<Integer> getBookedSeatNumbers(Long scheduleId) {
         return bookingRepository.findBySchedule_Id(scheduleId).stream()
-                .filter(booking -> "BOOKED".equalsIgnoreCase(booking.getStatus()))
+                .filter(booking ->
+                        "BOOKED".equalsIgnoreCase(booking.getStatus()) ||
+                                "RESERVED".equalsIgnoreCase(booking.getStatus()))
                 .map(Booking::getSeatNumber)
                 .collect(Collectors.toList());
     }
 
     public BookingResponse createBooking(BookingRequest bookingRequest) {
-        boolean seatAlreadyBooked = bookingRepository
-                .existsBySchedule_IdAndSeatNumberAndStatus(
-                        bookingRequest.getScheduleId(),
-                        bookingRequest.getSeatNumber(),
-                        "BOOKED"
+        boolean seatAlreadyBooked = bookingRepository.findBySchedule_Id(bookingRequest.getScheduleId())
+                .stream()
+                .anyMatch(booking ->
+                        booking.getSeatNumber().equals(bookingRequest.getSeatNumber()) &&
+                                ("BOOKED".equalsIgnoreCase(booking.getStatus()) ||
+                                        "RESERVED".equalsIgnoreCase(booking.getStatus()))
                 );
 
         if (seatAlreadyBooked) {
-            throw new SeatAlreadyBookedException("Seat is already booked.");
+            throw new SeatAlreadyBookedException("Seat is already booked or reserved.");
         }
 
         Schedule schedule = scheduleRepository.findById(bookingRequest.getScheduleId())
@@ -85,6 +88,24 @@ public class BookingService {
 
         return new BookingResponse(
                 "Booking cancelled successfully",
+                updatedBooking.getBookingId(),
+                updatedBooking.getPassengerName(),
+                updatedBooking.getPhoneNumber(),
+                updatedBooking.getSeatNumber(),
+                updatedBooking.getStatus(),
+                updatedBooking.getSchedule().getId()
+        );
+    }
+
+    public BookingResponse reserveBooking(Long bookingId) {
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new ResourceNotFoundException("Booking not found."));
+
+        booking.setStatus("RESERVED");
+        Booking updatedBooking = bookingRepository.save(booking);
+
+        return new BookingResponse(
+                "Booking reserved successfully",
                 updatedBooking.getBookingId(),
                 updatedBooking.getPassengerName(),
                 updatedBooking.getPhoneNumber(),

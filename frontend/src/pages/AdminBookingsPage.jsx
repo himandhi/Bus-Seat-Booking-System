@@ -37,17 +37,26 @@ function AdminBookingsPage() {
     }
   };
 
+  const handleReserveBooking = async (bookingId) => {
+    const confirmReserve = window.confirm("Are you sure you want to reserve this booking?");
+    if (!confirmReserve) return;
+
+    try {
+      await api.put(`/bookings/${bookingId}/reserve`);
+      fetchBookings();
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to reserve booking.");
+      console.error(err);
+    }
+  };
+
   return (
     <div className="page-container">
       <div className="top-action-bar">
         <button className="secondary-btn" onClick={() => navigate("/")}>
           Back to Home
         </button>
-
-        <button
-          className="secondary-btn"
-          onClick={() => navigate("/admin/schedules")}
-        >
+        <button className="secondary-btn" onClick={() => navigate("/admin/schedules")}>
           Add Schedule
         </button>
       </div>
@@ -74,7 +83,7 @@ function AdminBookingsPage() {
                 <th>Seat</th>
                 <th>Status</th>
                 <th>Schedule ID</th>
-                <th>Action</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -85,19 +94,44 @@ function AdminBookingsPage() {
                   <td>{booking.passengerName}</td>
                   <td>{booking.phoneNumber}</td>
                   <td>{booking.seatNumber}</td>
-                  <td>{booking.status}</td>
+                  <td>
+                    <span
+                      className={
+                        booking.status === "BOOKED"
+                          ? "status-booked"
+                          : booking.status === "RESERVED"
+                          ? "status-reserved"
+                          : "status-cancelled"
+                      }
+                    >
+                      {booking.status}
+                    </span>
+                  </td>
                   <td>{booking.schedule?.id}</td>
                   <td>
-                    {booking.status === "BOOKED" ? (
-                      <button
-                        className="cancel-btn"
-                        onClick={() => handleCancelBooking(booking.id)}
-                      >
-                        Cancel
-                      </button>
-                    ) : (
-                      <span className="cancelled-label">Cancelled</span>
-                    )}
+                    <div className="admin-action-group">
+                      {booking.status !== "RESERVED" && booking.status !== "CANCELLED" && (
+                        <button
+                          className="reserve-btn"
+                          onClick={() => handleReserveBooking(booking.id)}
+                        >
+                          Reserve
+                        </button>
+                      )}
+
+                      {booking.status !== "CANCELLED" && (
+                        <button
+                          className="cancel-btn"
+                          onClick={() => handleCancelBooking(booking.id)}
+                        >
+                          Cancel
+                        </button>
+                      )}
+
+                      {booking.status === "CANCELLED" && (
+                        <span className="cancelled-label">Cancelled</span>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}
