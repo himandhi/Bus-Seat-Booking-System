@@ -98,16 +98,29 @@ function AdminSchedulesPage() {
 
   return (
     <div className="page-container">
-      <button className="secondary-btn" onClick={() => navigate("/")}>
-        ← Back to Home
-      </button>
+      <div className="top-action-bar">
+        <button className="secondary-btn" onClick={() => navigate("/")}>
+          Back to Home
+        </button>
+
+        <button
+          className="secondary-btn"
+          onClick={() => navigate("/admin/bookings")}
+        >
+          View Bookings
+        </button>
+      </div>
 
       <h1 className="title">Admin - Add Schedule</h1>
       <p className="subtitle">Create a new bus travel schedule</p>
 
       {loadingRoutes && <p>Loading routes...</p>}
       {error && <p className="error-text">{error}</p>}
-      {successMessage && <div className="success-box"><p>{successMessage}</p></div>}
+      {successMessage && (
+        <div className="success-box">
+          <p>{successMessage}</p>
+        </div>
+      )}
 
       <form className="booking-form" onSubmit={handleSubmit}>
         <h2>Schedule Details</h2>
@@ -162,7 +175,11 @@ function AdminSchedulesPage() {
           />
         </div>
 
-        <button className="primary-btn full-width-btn" type="submit" disabled={submitLoading}>
+        <button
+          className="primary-btn full-width-btn"
+          type="submit"
+          disabled={submitLoading}
+        >
           {submitLoading ? "Creating Schedule..." : "Create Schedule"}
         </button>
       </form>

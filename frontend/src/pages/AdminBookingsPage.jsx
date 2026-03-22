@@ -39,9 +39,18 @@ function AdminBookingsPage() {
 
   return (
     <div className="page-container">
-      <button className="secondary-btn" onClick={() => navigate("/")}>
-        ← Back to Home
-      </button>
+      <div className="top-action-bar">
+        <button className="secondary-btn" onClick={() => navigate("/")}>
+          Back to Home
+        </button>
+
+        <button
+          className="secondary-btn"
+          onClick={() => navigate("/admin/schedules")}
+        >
+          Add Schedule
+        </button>
+      </div>
 
       <h1 className="title">Admin - All Bookings</h1>
       <p className="subtitle">View and manage bus seat bookings</p>
