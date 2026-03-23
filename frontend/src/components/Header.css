@@ -160,3 +160,35 @@
     display: none;
   }
 }
+
+/* ── Admin Panel Button ──────────────────────────────── */
+.btn-admin {
+  background: #111827;
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.5rem 1.1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.btn-admin:hover {
+  background: #374151;
+  transform: translateY(-1px);
+}
+
+/* ── Logged-in User ──────────────────────────────────── */
+.header-user {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.header-username {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #374151;
+  white-space: nowrap;
+}

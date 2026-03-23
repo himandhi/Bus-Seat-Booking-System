@@ -43,14 +43,7 @@ function HomePage() {
             Choose your route, pick a schedule, select your seat — all in one place.
           </p>
         </div>
-        <div className="hero-admin-links">
-          <button className="admin-link-btn" onClick={() => navigate("/admin/bookings")}>
-            📋 Admin Bookings
-          </button>
-          <button className="admin-link-btn" onClick={() => navigate("/admin/schedules")}>
-            ➕ Add Schedule
-          </button>
-        </div>
+
       </section>
 
       {/* Routes Section */}

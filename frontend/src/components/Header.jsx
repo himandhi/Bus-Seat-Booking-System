@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import "./Header.css";
 
 export default function Header() {
   const navigate = useNavigate();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
+  const { user, isAdmin, isLoggedIn, logout } = useAuth();
 
   const navLinks = [
     { label: "Home", path: "/" },
@@ -47,15 +49,31 @@ export default function Header() {
 
       {/* CTA Buttons */}
       <div className="header-actions">
-        <button className="btn-primary" onClick={() => navigate("/")}>
-          Buy Tickets
-        </button>
-        <button className="btn-outline" onClick={() => navigate("/login")}>
-          <svg viewBox="0 0 24 24" fill="none" width="16" height="16">
-            <path d="M15 3H19C20.1 3 21 3.9 21 5V19C21 20.1 20.1 21 19 21H15M10 17L15 12L10 7M15 12H3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-          Login / Sign Up
-        </button>
+        {isAdmin && (
+          <button className="btn-admin" onClick={() => navigate("/admin/bookings")}>
+            🛡️ Admin Panel
+          </button>
+        )}
+        {!isAdmin && (
+          <button className="btn-primary" onClick={() => navigate("/")}>
+            Buy Tickets
+          </button>
+        )}
+        {isLoggedIn ? (
+          <div className="header-user">
+            <span className="header-username">👤 {user.name}</span>
+            <button className="btn-outline" onClick={() => { logout(); navigate("/"); }}>
+              Logout
+            </button>
+          </div>
+        ) : (
+          <button className="btn-outline" onClick={() => navigate("/login")}>
+            <svg viewBox="0 0 24 24" fill="none" width="16" height="16">
+              <path d="M15 3H19C20.1 3 21 3.9 21 5V19C21 20.1 20.1 21 19 21H15M10 17L15 12L10 7M15 12H3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            Login / Sign Up
+          </button>
+        )}
       </div>
 
       {/* Hamburger for mobile */}
