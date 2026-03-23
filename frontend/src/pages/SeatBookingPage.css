@@ -1,0 +1,425 @@
+/* ── Seat Booking Page ───────────────────────────────── */
+.booking-page {
+  font-family: 'Segoe UI', sans-serif;
+  background: #f8fafc;
+  min-height: 100vh;
+}
+
+/* ── Page Header ─────────────────────────────────────── */
+.booking-page-header {
+  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+  padding: 2.5rem 2rem 2rem;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.back-btn {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  font-size: 0.88rem;
+  font-weight: 600;
+  padding: 0.45rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+  align-self: flex-start;
+}
+
+.back-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.booking-page-title h1 {
+  font-size: 1.9rem;
+  font-weight: 800;
+  margin: 0 0 0.3rem;
+  color: #ffffff;
+}
+
+.booking-page-title p {
+  font-size: 0.95rem;
+  color: #bfdbfe;
+  margin: 0;
+}
+
+/* ── Body Layout ─────────────────────────────────────── */
+.booking-body {
+  display: flex;
+  gap: 2rem;
+  max-width: 1100px;
+  margin: 2.5rem auto;
+  padding: 0 2rem 4rem;
+  align-items: flex-start;
+}
+
+/* ── Left Column ─────────────────────────────────────── */
+.booking-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* ── Schedule Info Card ──────────────────────────────── */
+.schedule-info-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.info-card-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 1rem;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #f3f4f6;
+  font-size: 0.9rem;
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-label {
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.info-value {
+  color: #111827;
+  font-weight: 600;
+}
+
+.bus-badge {
+  background: #eff6ff;
+  color: #1d4ed8;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.82rem;
+  border: 1px solid #dbeafe;
+}
+
+/* ── Seat Legend ─────────────────────────────────────── */
+.seat-legend {
+  display: flex;
+  gap: 1.25rem;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 0.9rem 1.25rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: #374151;
+  font-weight: 500;
+}
+
+.legend-box {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: 2px solid transparent;
+  flex-shrink: 0;
+}
+
+.legend-available {
+  background: #d1fae5;
+  border-color: #6ee7b7;
+}
+
+.legend-booked {
+  background: #fecaca;
+  border-color: #f87171;
+}
+
+.legend-selected {
+  background: #2563eb;
+  border-color: #1d4ed8;
+}
+
+/* ── Seat Map ────────────────────────────────────────── */
+.seat-map-container {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.bus-front {
+  text-align: center;
+  font-size: 0.8rem;
+  color: #9ca3af;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding-bottom: 1rem;
+  border-bottom: 2px dashed #e5e7eb;
+  margin-bottom: 1.25rem;
+}
+
+.seat-map {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.seat-row {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.aisle-gap {
+  width: 1.5rem;
+  flex-shrink: 0;
+}
+
+/* ── Individual Seat ─────────────────────────────────── */
+.seat {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+}
+
+.seat:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+.seat-available {
+  background: #d1fae5;
+  border-color: #6ee7b7;
+  color: #065f46;
+}
+
+.seat-booked {
+  background: #fecaca;
+  border-color: #f87171;
+  color: #991b1b;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+.seat-selected {
+  background: #2563eb;
+  border-color: #1d4ed8;
+  color: white;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+}
+
+/* ── Selected Seat Banner ────────────────────────────── */
+.selected-seat-banner {
+  background: #ecfdf5;
+  border: 1.5px solid #6ee7b7;
+  color: #065f46;
+  border-radius: 10px;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.92rem;
+  font-weight: 500;
+}
+
+/* ── Right Column ────────────────────────────────────── */
+.booking-right {
+  width: 340px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 88px; /* below header */
+}
+
+.booking-form-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.07);
+}
+
+.form-card-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 1.5rem;
+}
+
+/* ── Form ────────────────────────────────────────────── */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 1.1rem;
+}
+
+.form-group label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.form-group input {
+  padding: 0.65rem 1rem;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 0.93rem;
+  color: #111827;
+  background: #f9fafb;
+  outline: none;
+  font-family: inherit;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.form-group input:focus {
+  border-color: #2563eb;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+}
+
+/* ── Booking Summary ─────────────────────────────────── */
+.booking-summary {
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+  margin: 1.25rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.88rem;
+}
+
+.summary-row span:first-child {
+  color: #6b7280;
+}
+
+.summary-row span:last-child {
+  font-weight: 600;
+  color: #111827;
+}
+
+/* ── Confirm Button ──────────────────────────────────── */
+.confirm-btn {
+  width: 100%;
+  background: #2563eb;
+  color: white;
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 0.8rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.confirm-btn:hover:not(:disabled) {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+.confirm-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.btn-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255,255,255,0.4);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  display: inline-block;
+}
+
+/* ── Loading & Error ─────────────────────────────────── */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem;
+  color: #6b7280;
+}
+
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #e5e7eb;
+  border-top-color: #2563eb;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.error-banner {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+  margin-bottom: 1.25rem;
+  font-size: 0.88rem;
+  font-weight: 500;
+}
+
+/* ── Responsive ──────────────────────────────────────── */
+@media (max-width: 900px) {
+  .booking-body {
+    flex-direction: column;
+  }
+
+  .booking-right {
+    width: 100%;
+    position: static;
+  }
+}
+
+@media (max-width: 640px) {
+  .booking-page-title h1 {
+    font-size: 1.5rem;
+  }
+
+  .booking-body {
+    padding: 1.5rem 1.25rem 3rem;
+  }
+
+  .seat {
+    width: 38px;
+    height: 38px;
+    font-size: 0.75rem;
+  }
+}

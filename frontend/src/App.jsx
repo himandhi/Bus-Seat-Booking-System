@@ -1,14 +1,21 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Header from "./components/Header";
 import HomePage from "./pages/HomePage";
 import SchedulePage from "./pages/SchedulePage";
 import SeatBookingPage from "./pages/SeatBookingPage";
 import BookingSuccessPage from "./pages/BookingSuccessPage";
 import AdminBookingsPage from "./pages/AdminBookingsPage";
 import AdminSchedulesPage from "./pages/AdminSchedulesPage";
+import AboutPage from "./pages/AboutPage";
+import ContactPage from "./pages/ContactPage";
+import "./App.css";
 
 function App() {
   return (
-    <BrowserRouter>
+    <Router>
+      {/* Header appears on every page */}
+      <Header />
+
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/schedules/:routeId" element={<SchedulePage />} />
@@ -16,8 +23,10 @@ function App() {
         <Route path="/booking-success" element={<BookingSuccessPage />} />
         <Route path="/admin/bookings" element={<AdminBookingsPage />} />
         <Route path="/admin/schedules" element={<AdminSchedulesPage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/contact" element={<ContactPage />} />
       </Routes>
-    </BrowserRouter>
+    </Router>
   );
 }
 

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
+import "./HomePage.css";
 
 function HomePage() {
   const [routes, setRoutes] = useState([]);
@@ -28,46 +29,65 @@ function HomePage() {
     navigate(`/schedules/${routeId}`);
   };
 
-  const goToAdminBookings = () => {
-    navigate("/admin/bookings");
-  };
-
-  const goToAdminSchedules = () => {
-    navigate("/admin/schedules");
-  };
-
   return (
-    <div className="page-container">
-      <h1 className="title">Bus Seat Booking Application</h1>
-      <p className="subtitle">Select a route to start booking your seat</p>
+    <div className="home-page">
 
-      <div className="top-action-bar">
-        <button className="secondary-btn" onClick={goToAdminBookings}>
-          Admin Bookings
-        </button>
-        <button className="secondary-btn" onClick={goToAdminSchedules}>
-          Add Schedule
-        </button>
-      </div>
+      {/* Hero Section */}
+      <section className="home-hero">
+        <div className="hero-text">
+          <span className="hero-badge">🚌 Sri Lanka's Bus Booking Platform</span>
+          <h1 className="hero-title">
+            Book Your Bus Seat <span className="hero-highlight">in Seconds</span>
+          </h1>
+          <p className="hero-subtitle">
+            Choose your route, pick a schedule, select your seat — all in one place.
+          </p>
+        </div>
+        <div className="hero-admin-links">
+          <button className="admin-link-btn" onClick={() => navigate("/admin/bookings")}>
+            📋 Admin Bookings
+          </button>
+          <button className="admin-link-btn" onClick={() => navigate("/admin/schedules")}>
+            ➕ Add Schedule
+          </button>
+        </div>
+      </section>
 
-      {loading && <p>Loading routes...</p>}
-      {error && <p className="error-text">{error}</p>}
+      {/* Routes Section */}
+      <section className="home-routes">
+        <h2 className="routes-heading">Available Routes</h2>
+        <p className="routes-subheading">Select a route to view schedules and book your seat</p>
 
-      <div className="route-list">
-        {routes.map((route) => (
-          <div className="route-card" key={route.id}>
-            <h3>
-              {route.fromCity} → {route.toCity}
-            </h3>
-            <button
-              className="primary-btn"
-              onClick={() => handleViewSchedules(route.id)}
-            >
-              View Schedules
-            </button>
+        {loading && (
+          <div className="loading-state">
+            <div className="spinner" />
+            <p>Loading routes...</p>
           </div>
-        ))}
-      </div>
+        )}
+
+        {error && (
+          <div className="error-banner">
+            ⚠️ {error}
+          </div>
+        )}
+
+        <div className="route-grid">
+          {routes.map((route) => (
+            <div className="route-card" key={route.id}>
+              <div className="route-card-icon">🗺️</div>
+              <h3 className="route-card-title">
+                {route.fromCity} <span className="route-arrow">→</span> {route.toCity}
+              </h3>
+              <button
+                className="route-card-btn"
+                onClick={() => handleViewSchedules(route.id)}
+              >
+                View Schedules
+              </button>
+            </div>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }
