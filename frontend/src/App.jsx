@@ -8,6 +8,7 @@ import AdminBookingsPage from "./pages/AdminBookingsPage";
 import AdminSchedulesPage from "./pages/AdminSchedulesPage";
 import AboutPage from "./pages/AboutPage";
 import ContactPage from "./pages/ContactPage";
+import LoginPage from "./pages/LoginPage";
 import "./App.css";
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
         <Route path="/admin/schedules" element={<AdminSchedulesPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/contact" element={<ContactPage />} />
+        <Route path="/login" element={<LoginPage />} />
       </Routes>
     </Router>
   );
