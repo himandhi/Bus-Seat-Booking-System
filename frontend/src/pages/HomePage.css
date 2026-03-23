@@ -8,11 +8,11 @@
 /* ── Hero ────────────────────────────────────────────── */
 .home-hero {
   background: linear-gradient(135deg, #0f2d7a 0%, #1a3fa3 40%, #1e50c8 70%, #2563eb 100%);
-  min-height: 420px;
+  height: calc(100vh - 80px);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 4rem 5rem;
+  padding: 0 5rem;
   gap: 3rem;
   position: relative;
   overflow: hidden;
@@ -33,29 +33,30 @@
 /* ── Left Text ───────────────────────────────────────── */
 .hero-left {
   color: white;
-  max-width: 480px;
+  max-width: 520px;
   flex-shrink: 0;
 }
 
 .hero-title {
-  font-size: 3.2rem;
+  font-size: 4.6rem;
   font-weight: 900;
-  line-height: 1.08;
+  line-height: 1.06;
   color: #ffffff;
-  margin: 0 0 1.25rem;
-  letter-spacing: -0.5px;
+  margin: 0 0 1rem;
+  letter-spacing: -1px;
   text-transform: uppercase;
 }
 
 .hero-highlight {
   color: #38bdf8;
+  display: inline-block;
 }
 
 .hero-subtitle {
-  font-size: 1rem;
-  color: rgba(255,255,255,0.75);
-  line-height: 1.6;
-  margin: 0 0 1.75rem;
+  font-size: 1.3rem;
+  color: rgba(255,255,255,0.82);
+  line-height: 1.65;
+  margin: 0 0 1.25rem;
 }
 
 .hero-contact {
@@ -68,9 +69,14 @@
   display: flex;
   align-items: center;
   gap: 7px;
-  font-size: 0.88rem;
-  color: rgba(255,255,255,0.8);
+  font-size: 1.1rem;
+  color: rgba(255,255,255,0.85);
   font-weight: 500;
+  transition: color 0.2s;
+}
+
+.hero-contact span:hover {
+  color: #ffffff;
 }
 
 .hero-contact svg {
@@ -82,14 +88,14 @@
 .hero-search-card {
   background: white;
   border-radius: 20px;
-  padding: 2.25rem 2rem;
+  padding: 1.75rem 2rem;
   width: 100%;
-  max-width: 480px;
+  max-width: 520px;
   flex-shrink: 0;
   box-shadow: 0 24px 60px rgba(0,0,0,0.2);
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1rem;
 }
 
 /* ── Search Fields ───────────────────────────────────── */
@@ -103,17 +109,17 @@
   display: flex;
   align-items: center;
   gap: 7px;
-  font-size: 0.88rem;
+  font-size: 1rem;
   font-weight: 700;
   color: #111827;
 }
 
 .search-field select {
   width: 100%;
-  padding: 0.72rem 1rem;
+  padding: 0.8rem 1rem;
   border: 1.5px solid #e5e7eb;
   border-radius: 10px;
-  font-size: 0.92rem;
+  font-size: 1rem;
   color: #374151;
   background: #f9fafb;
   appearance: none;
@@ -171,9 +177,9 @@
   width: 100%;
   background: #2563eb;
   color: white;
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: 700;
-  padding: 0.9rem;
+  padding: 1rem;
   border: none;
   border-radius: 12px;
   cursor: pointer;
@@ -341,8 +347,6 @@
   animation: spin 0.7s linear infinite;
 }
 
-@keyframes spin { to { transform: rotate(360deg); } }
-
 .error-banner {
   background: #fef2f2;
   border: 1px solid #fecaca;
@@ -365,12 +369,13 @@
   .home-hero {
     flex-direction: column;
     align-items: flex-start;
+    height: auto;
     padding: 3rem 1.75rem;
     gap: 2rem;
   }
 
   .hero-title {
-    font-size: 2.4rem;
+    font-size: 2.8rem;
   }
 
   .hero-search-card {
@@ -380,7 +385,7 @@
 }
 
 @media (max-width: 480px) {
-  .hero-title { font-size: 1.9rem; }
+  .hero-title { font-size: 2.2rem; }
   .home-routes { padding: 2rem 1.25rem 3rem; }
 }
 
@@ -452,4 +457,28 @@
   color: #6b7280;
   line-height: 1.6;
   margin: 0;
+}
+
+/* ── Explore More ────────────────────────────────────── */
+.explore-more-wrap {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.explore-more-link {
+  background: none;
+  border: 2px solid #2563eb;
+  color: #2563eb;
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 0.65rem 2rem;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, transform 0.1s;
+}
+
+.explore-more-link:hover {
+  background: #2563eb;
+  color: white;
+  transform: translateY(-1px);
 }

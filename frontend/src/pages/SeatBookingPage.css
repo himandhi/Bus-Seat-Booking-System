@@ -247,7 +247,7 @@
   width: 340px;
   flex-shrink: 0;
   position: sticky;
-  top: 88px; /* below header */
+  top: 100px; /* below header */
 }
 
 .booking-form-card {

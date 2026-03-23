@@ -36,12 +36,9 @@ function HomePage() {
   const fromCities = [...new Set(routes.map(r => r.fromCity))];
 
   const handleFindTickets = () => {
-    if (!pickupCity || !droppingCity) return;
-    const matched = routes.find(
-      r => r.fromCity === pickupCity && r.toCity === droppingCity
-    );
-    if (matched) navigate(`/schedules/${matched.id}`);
-    else alert("No route found for the selected cities.");
+    navigate("/routes-listing", {
+      state: { pickupCity, droppingCity, departureDate }
+    });
   };
 
   return (
@@ -51,9 +48,8 @@ function HomePage() {
       <section className="home-hero">
         <div className="hero-left">
           <h1 className="hero-title">
-            GET YOUR<br />
-            TICKETS<br />
-            WITH <span className="hero-highlight">JUST 3<br />STEPS</span>
+            GET YOUR TICKETS<br />
+            WITH <span className="hero-highlight">JUST 3 STEPS</span>
           </h1>
           <p className="hero-subtitle">
             Book your bus tickets easily and travel comfortably
@@ -178,7 +174,7 @@ function HomePage() {
         )}
 
         <div className="route-grid">
-          {routes.map((route) => (
+          {routes.slice(0, 6).map((route) => (
             <div className="route-card" key={route.id}>
               <div className="route-card-top">
                 <div className="route-bus-icon">
@@ -205,6 +201,13 @@ function HomePage() {
               </div>
             </div>
           ))}
+        </div>
+
+        {/* Explore More */}
+        <div className="explore-more-wrap">
+          <button className="explore-more-link" onClick={() => navigate("/routes-listing")}>
+            Explore more routes →
+          </button>
         </div>
       </section>
     </div>

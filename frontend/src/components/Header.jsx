@@ -55,7 +55,7 @@ export default function Header() {
           </button>
         )}
         {!isAdmin && (
-          <button className="btn-primary" onClick={() => navigate("/")}>
+          <button className="btn-primary" onClick={() => navigate("/routes-listing")}>
             Buy Tickets
           </button>
         )}

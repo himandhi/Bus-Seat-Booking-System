@@ -12,6 +12,7 @@ import AdminSchedulesPage from "./pages/AdminSchedulesPage";
 import AboutPage from "./pages/AboutPage";
 import ContactPage from "./pages/ContactPage";
 import LoginPage from "./pages/LoginPage";
+import RoutesListingPage from "./pages/RoutesListingPage";
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
           <Route path="/about" element={<AboutPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/routes-listing" element={<RoutesListingPage />} />
         </Routes>
         <Footer />
       </BrowserRouter>
