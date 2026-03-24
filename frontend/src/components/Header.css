@@ -192,3 +192,21 @@
   color: #374151;
   white-space: nowrap;
 }
+
+/* ── Dashboard Button ────────────────────────────────── */
+.btn-dashboard {
+  background: #111827;
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.5rem 1.1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.btn-dashboard:hover {
+  background: #374151;
+  transform: translateY(-1px);
+}

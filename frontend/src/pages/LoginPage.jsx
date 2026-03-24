@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import api from "../services/api";
 import "./LoginPage.css";
 
 // ── Modes: "login" | "register" | "forgot-email" | "forgot-verify" | "forgot-reset"
@@ -9,7 +10,7 @@ export default function LoginPage() {
   const { login } = useAuth();
 
   const [mode, setMode] = useState("login");
-  const [accountType, setAccountType] = useState("user"); // "user" | "admin"
+  const [accountType, setAccountType] = useState("user");
 
   // Login fields
   const [loginEmail, setLoginEmail] = useState("");
@@ -36,31 +37,38 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
 
   const clearMessages = () => { setError(""); setSuccess(""); };
-
   const switchMode = (m) => { setMode(m); clearMessages(); };
 
   // ── Login Submit
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     clearMessages();
     if (!loginEmail || !loginPassword) { setError("Please fill in all fields."); return; }
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      // TODO: replace with real api.post("/auth/login") call
-      const userData = {
-        name: loginEmail.split("@")[0],
+    try {
+      const response = await api.post("/users/login", {
         email: loginEmail,
-        role: accountType, // "user" or "admin"
+        password: loginPassword,
+      });
+      const userData = {
+        id: response.data.id,
+        name: response.data.name,
+        email: response.data.email,
+        phone: response.data.phone,
+        role: response.data.role.toLowerCase(), // "user" or "admin"
       };
       login(userData);
-      if (accountType === "admin") navigate("/admin/dashboard");
-      else navigate("/");
-    }, 1000);
+      if (userData.role === "admin") navigate("/admin/dashboard");
+      else navigate("/user/dashboard");
+    } catch (err) {
+      setError(err.response?.data?.message || "Invalid email or password.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   // ── Register Submit
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
     clearMessages();
     if (!regName || !regEmail || !regPhone || !regPassword || !regConfirm) {
@@ -69,55 +77,76 @@ export default function LoginPage() {
     if (regPassword !== regConfirm) { setError("Passwords do not match."); return; }
     if (!/^\d{10}$/.test(regPhone)) { setError("Phone number must be 10 digits."); return; }
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      // TODO: connect to Spring Boot /api/auth/register
-      setSuccess("Account created! Please log in.");
+    try {
+      await api.post("/users/register", {
+        name: regName,
+        email: regEmail,
+        phone: regPhone,
+        password: regPassword,
+        role: accountType.toUpperCase(), // "USER" or "ADMIN"
+      });
+      setSuccess("Account created successfully! Please log in.");
       switchMode("login");
-    }, 1000);
+    } catch (err) {
+      setError(err.response?.data?.message || "Registration failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   // ── Forgot — Step 1: send code
-  const handleSendCode = (e) => {
+  const handleSendCode = async (e) => {
     e.preventDefault();
     clearMessages();
     if (!fpEmail) { setError("Please enter your email address."); return; }
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      // TODO: connect to Spring Boot /api/auth/forgot-password
+    try {
+      // TODO: connect to Spring Boot /api/users/forgot-password when email service is ready
+      // await api.post("/users/forgot-password", { email: fpEmail });
       setSuccess(`Verification code sent to ${fpEmail}`);
       switchMode("forgot-verify");
-    }, 1000);
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to send verification code.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   // ── Forgot — Step 2: verify code
-  const handleVerifyCode = (e) => {
+  const handleVerifyCode = async (e) => {
     e.preventDefault();
     clearMessages();
     if (!fpCode || fpCode.length < 4) { setError("Please enter the verification code."); return; }
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      // TODO: connect to Spring Boot /api/auth/verify-code
+    try {
+      // TODO: connect to Spring Boot /api/users/verify-code when email service is ready
+      // await api.post("/users/verify-code", { email: fpEmail, code: fpCode });
       switchMode("forgot-reset");
-    }, 1000);
+    } catch (err) {
+      setError(err.response?.data?.message || "Invalid verification code.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   // ── Forgot — Step 3: reset password
-  const handleResetPassword = (e) => {
+  const handleResetPassword = async (e) => {
     e.preventDefault();
     clearMessages();
     if (!fpNewPw || !fpConfirmPw) { setError("Please fill in all fields."); return; }
     if (fpNewPw !== fpConfirmPw) { setError("Passwords do not match."); return; }
     if (fpNewPw.length < 6) { setError("Password must be at least 6 characters."); return; }
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      // TODO: connect to Spring Boot /api/auth/reset-password
+    try {
+      // TODO: connect to Spring Boot /api/users/reset-password when email service is ready
+      // await api.post("/users/reset-password", { email: fpEmail, newPassword: fpNewPw });
       setSuccess("Password reset successfully! Please log in.");
       switchMode("login");
-    }, 1000);
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to reset password.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const features = [
@@ -125,8 +154,6 @@ export default function LoginPage() {
     { icon: "🔒", title: "Secure Payment", desc: "Your transactions are safe with us" },
     { icon: "🕐", title: "24/7 Support", desc: "We're here to help anytime you need" },
   ];
-
-  const isForgotFlow = mode.startsWith("forgot");
 
   return (
     <div className="auth-page">
@@ -177,60 +204,38 @@ export default function LoginPage() {
               <h2 className="auth-welcome">Welcome</h2>
               <p className="auth-welcome-sub">Login or create a new account</p>
 
-              {/* Login / Register Tabs */}
               <div className="auth-tabs">
                 <button className="auth-tab active">Login</button>
                 <button className="auth-tab" onClick={() => switchMode("register")}>Register</button>
               </div>
 
-              {/* Account Type */}
               <div className="account-type-section">
                 <p className="account-type-label">Account Type</p>
                 <div className="account-type-btns">
-                  <button
-                    className={`account-type-btn ${accountType === "user" ? "active" : ""}`}
-                    onClick={() => setAccountType("user")}
-                  >
+                  <button className={`account-type-btn ${accountType === "user" ? "active" : ""}`} onClick={() => setAccountType("user")}>
                     <span>👤</span> User
                   </button>
-                  <button
-                    className={`account-type-btn ${accountType === "admin" ? "active" : ""}`}
-                    onClick={() => setAccountType("admin")}
-                  >
+                  <button className={`account-type-btn ${accountType === "admin" ? "active" : ""}`} onClick={() => setAccountType("admin")}>
                     <span>🛡️</span> Admin
                   </button>
                 </div>
               </div>
 
-              {error && <div className="auth-error">⚠️ {error}</div>}
+              {error   && <div className="auth-error">⚠️ {error}</div>}
               {success && <div className="auth-success">✅ {success}</div>}
 
               <form onSubmit={handleLogin}>
                 <div className="auth-field">
                   <label>Email</label>
-                  <input
-                    type="email"
-                    placeholder="Enter your email"
-                    value={loginEmail}
-                    onChange={(e) => setLoginEmail(e.target.value)}
-                  />
+                  <input type="email" placeholder="Enter your email" value={loginEmail} onChange={e => setLoginEmail(e.target.value)} />
                 </div>
-
                 <div className="auth-field">
                   <label>Password</label>
                   <div className="pw-wrap">
-                    <input
-                      type={showLoginPw ? "text" : "password"}
-                      placeholder="Enter your password"
-                      value={loginPassword}
-                      onChange={(e) => setLoginPassword(e.target.value)}
-                    />
-                    <button type="button" className="pw-toggle" onClick={() => setShowLoginPw(!showLoginPw)}>
-                      {showLoginPw ? "🙈" : "👁️"}
-                    </button>
+                    <input type={showLoginPw ? "text" : "password"} placeholder="Enter your password" value={loginPassword} onChange={e => setLoginPassword(e.target.value)} />
+                    <button type="button" className="pw-toggle" onClick={() => setShowLoginPw(!showLoginPw)}>{showLoginPw ? "🙈" : "👁️"}</button>
                   </div>
                 </div>
-
                 <button className="auth-submit-btn" type="submit" disabled={loading}>
                   {loading ? <span className="btn-spinner" /> : null}
                   {loading ? "Logging in..." : "Login"}
@@ -238,14 +243,10 @@ export default function LoginPage() {
               </form>
 
               <div className="auth-links">
-                <button className="auth-link-btn" onClick={() => switchMode("forgot-email")}>
-                  Forgot Password?
-                </button>
+                <button className="auth-link-btn" onClick={() => switchMode("forgot-email")}>Forgot Password?</button>
                 <span className="auth-link-text">
                   Don't have an account?{" "}
-                  <button className="auth-link-btn inline" onClick={() => switchMode("register")}>
-                    Register
-                  </button>
+                  <button className="auth-link-btn inline" onClick={() => switchMode("register")}>Register</button>
                 </span>
               </div>
             </div>
@@ -257,87 +258,50 @@ export default function LoginPage() {
               <h2 className="auth-welcome">Welcome</h2>
               <p className="auth-welcome-sub">Login or create a new account</p>
 
-              {/* Login / Register Tabs */}
               <div className="auth-tabs">
                 <button className="auth-tab" onClick={() => switchMode("login")}>Login</button>
                 <button className="auth-tab active">Register</button>
               </div>
 
-              {/* Account Type */}
               <div className="account-type-section">
                 <p className="account-type-label">Account Type</p>
                 <div className="account-type-btns">
-                  <button
-                    className={`account-type-btn ${accountType === "user" ? "active" : ""}`}
-                    onClick={() => setAccountType("user")}
-                  >
+                  <button className={`account-type-btn ${accountType === "user" ? "active" : ""}`} onClick={() => setAccountType("user")}>
                     <span>👤</span> User
                   </button>
-                  <button
-                    className={`account-type-btn ${accountType === "admin" ? "active" : ""}`}
-                    onClick={() => setAccountType("admin")}
-                  >
+                  <button className={`account-type-btn ${accountType === "admin" ? "active" : ""}`} onClick={() => setAccountType("admin")}>
                     <span>🛡️</span> Admin
                   </button>
                 </div>
               </div>
 
-              {error && <div className="auth-error">⚠️ {error}</div>}
+              {error   && <div className="auth-error">⚠️ {error}</div>}
               {success && <div className="auth-success">✅ {success}</div>}
 
               <form onSubmit={handleRegister}>
                 <div className="auth-field">
                   <label>Full Name</label>
-                  <input
-                    type="text"
-                    placeholder="John Perera"
-                    value={regName}
-                    onChange={(e) => setRegName(e.target.value)}
-                  />
+                  <input type="text" placeholder="John Perera" value={regName} onChange={e => setRegName(e.target.value)} />
                 </div>
                 <div className="auth-field">
                   <label>Email</label>
-                  <input
-                    type="email"
-                    placeholder="Enter your email"
-                    value={regEmail}
-                    onChange={(e) => setRegEmail(e.target.value)}
-                  />
+                  <input type="email" placeholder="Enter your email" value={regEmail} onChange={e => setRegEmail(e.target.value)} />
                 </div>
                 <div className="auth-field">
                   <label>Phone Number</label>
-                  <input
-                    type="text"
-                    placeholder="10-digit number"
-                    maxLength={10}
-                    value={regPhone}
-                    onChange={(e) => setRegPhone(e.target.value)}
-                  />
+                  <input type="text" placeholder="10-digit number" maxLength={10} value={regPhone} onChange={e => setRegPhone(e.target.value)} />
                 </div>
                 <div className="auth-field">
                   <label>Password</label>
                   <div className="pw-wrap">
-                    <input
-                      type={showRegPw ? "text" : "password"}
-                      placeholder="Create a password"
-                      value={regPassword}
-                      onChange={(e) => setRegPassword(e.target.value)}
-                    />
-                    <button type="button" className="pw-toggle" onClick={() => setShowRegPw(!showRegPw)}>
-                      {showRegPw ? "🙈" : "👁️"}
-                    </button>
+                    <input type={showRegPw ? "text" : "password"} placeholder="Create a password" value={regPassword} onChange={e => setRegPassword(e.target.value)} />
+                    <button type="button" className="pw-toggle" onClick={() => setShowRegPw(!showRegPw)}>{showRegPw ? "🙈" : "👁️"}</button>
                   </div>
                 </div>
                 <div className="auth-field">
                   <label>Confirm Password</label>
-                  <input
-                    type="password"
-                    placeholder="Confirm your password"
-                    value={regConfirm}
-                    onChange={(e) => setRegConfirm(e.target.value)}
-                  />
+                  <input type="password" placeholder="Confirm your password" value={regConfirm} onChange={e => setRegConfirm(e.target.value)} />
                 </div>
-
                 <button className="auth-submit-btn" type="submit" disabled={loading}>
                   {loading ? <span className="btn-spinner" /> : null}
                   {loading ? "Creating Account..." : "Create Account"}
@@ -347,22 +311,19 @@ export default function LoginPage() {
               <div className="auth-links">
                 <span className="auth-link-text">
                   Already have an account?{" "}
-                  <button className="auth-link-btn inline" onClick={() => switchMode("login")}>
-                    Login
-                  </button>
+                  <button className="auth-link-btn inline" onClick={() => switchMode("login")}>Login</button>
                 </span>
               </div>
             </div>
           )}
 
-          {/* ───── FORGOT — STEP 1: Enter Email ───── */}
+          {/* ───── FORGOT — STEP 1 ───── */}
           {mode === "forgot-email" && (
             <div className="auth-form-wrap">
               <button className="fp-back-btn" onClick={() => switchMode("login")}>← Back to Login</button>
               <div className="fp-icon">📧</div>
               <h2 className="auth-welcome">Forgot Password?</h2>
-              <p className="auth-welcome-sub">Enter your email address and we'll send you a verification code.</p>
-
+              <p className="auth-welcome-sub">Enter your email and we'll send you a verification code.</p>
               <div className="fp-steps">
                 <div className="fp-step active"><span>1</span></div>
                 <div className="fp-step-line" />
@@ -370,19 +331,12 @@ export default function LoginPage() {
                 <div className="fp-step-line" />
                 <div className="fp-step"><span>3</span></div>
               </div>
-
-              {error && <div className="auth-error">⚠️ {error}</div>}
+              {error   && <div className="auth-error">⚠️ {error}</div>}
               {success && <div className="auth-success">✅ {success}</div>}
-
               <form onSubmit={handleSendCode}>
                 <div className="auth-field">
                   <label>Email Address</label>
-                  <input
-                    type="email"
-                    placeholder="Enter your registered email"
-                    value={fpEmail}
-                    onChange={(e) => setFpEmail(e.target.value)}
-                  />
+                  <input type="email" placeholder="Enter your registered email" value={fpEmail} onChange={e => setFpEmail(e.target.value)} />
                 </div>
                 <button className="auth-submit-btn" type="submit" disabled={loading}>
                   {loading ? <span className="btn-spinner" /> : null}
@@ -392,14 +346,13 @@ export default function LoginPage() {
             </div>
           )}
 
-          {/* ───── FORGOT — STEP 2: Verify Code ───── */}
+          {/* ───── FORGOT — STEP 2 ───── */}
           {mode === "forgot-verify" && (
             <div className="auth-form-wrap">
               <button className="fp-back-btn" onClick={() => switchMode("forgot-email")}>← Back</button>
               <div className="fp-icon">🔑</div>
               <h2 className="auth-welcome">Enter Verification Code</h2>
               <p className="auth-welcome-sub">We sent a code to <strong>{fpEmail}</strong>. Check your inbox.</p>
-
               <div className="fp-steps">
                 <div className="fp-step done"><span>✓</span></div>
                 <div className="fp-step-line active" />
@@ -407,46 +360,33 @@ export default function LoginPage() {
                 <div className="fp-step-line" />
                 <div className="fp-step"><span>3</span></div>
               </div>
-
-              {error && <div className="auth-error">⚠️ {error}</div>}
+              {error   && <div className="auth-error">⚠️ {error}</div>}
               {success && <div className="auth-success">✅ {success}</div>}
-
               <form onSubmit={handleVerifyCode}>
                 <div className="auth-field">
                   <label>Verification Code</label>
-                  <input
-                    type="text"
-                    placeholder="Enter the code from your email"
-                    maxLength={8}
-                    value={fpCode}
-                    onChange={(e) => setFpCode(e.target.value)}
-                    className="code-input"
-                  />
+                  <input type="text" placeholder="Enter the code from your email" maxLength={8} value={fpCode} onChange={e => setFpCode(e.target.value)} className="code-input" />
                 </div>
                 <button className="auth-submit-btn" type="submit" disabled={loading}>
                   {loading ? <span className="btn-spinner" /> : null}
                   {loading ? "Verifying..." : "Verify Code →"}
                 </button>
               </form>
-
               <div className="auth-links">
                 <span className="auth-link-text">
                   Didn't receive a code?{" "}
-                  <button className="auth-link-btn inline" onClick={handleSendCode}>
-                    Resend
-                  </button>
+                  <button className="auth-link-btn inline" onClick={handleSendCode}>Resend</button>
                 </span>
               </div>
             </div>
           )}
 
-          {/* ───── FORGOT — STEP 3: New Password ───── */}
+          {/* ───── FORGOT — STEP 3 ───── */}
           {mode === "forgot-reset" && (
             <div className="auth-form-wrap">
               <div className="fp-icon">🔒</div>
               <h2 className="auth-welcome">Reset Password</h2>
               <p className="auth-welcome-sub">Create a strong new password for your account.</p>
-
               <div className="fp-steps">
                 <div className="fp-step done"><span>✓</span></div>
                 <div className="fp-step-line active" />
@@ -454,32 +394,18 @@ export default function LoginPage() {
                 <div className="fp-step-line active" />
                 <div className="fp-step active"><span>3</span></div>
               </div>
-
               {error && <div className="auth-error">⚠️ {error}</div>}
-
               <form onSubmit={handleResetPassword}>
                 <div className="auth-field">
                   <label>New Password</label>
                   <div className="pw-wrap">
-                    <input
-                      type={showFpPw ? "text" : "password"}
-                      placeholder="Enter new password"
-                      value={fpNewPw}
-                      onChange={(e) => setFpNewPw(e.target.value)}
-                    />
-                    <button type="button" className="pw-toggle" onClick={() => setShowFpPw(!showFpPw)}>
-                      {showFpPw ? "🙈" : "👁️"}
-                    </button>
+                    <input type={showFpPw ? "text" : "password"} placeholder="Enter new password" value={fpNewPw} onChange={e => setFpNewPw(e.target.value)} />
+                    <button type="button" className="pw-toggle" onClick={() => setShowFpPw(!showFpPw)}>{showFpPw ? "🙈" : "👁️"}</button>
                   </div>
                 </div>
                 <div className="auth-field">
                   <label>Confirm New Password</label>
-                  <input
-                    type="password"
-                    placeholder="Confirm new password"
-                    value={fpConfirmPw}
-                    onChange={(e) => setFpConfirmPw(e.target.value)}
-                  />
+                  <input type="password" placeholder="Confirm new password" value={fpConfirmPw} onChange={e => setFpConfirmPw(e.target.value)} />
                 </div>
                 <button className="auth-submit-btn" type="submit" disabled={loading}>
                   {loading ? <span className="btn-spinner" /> : null}

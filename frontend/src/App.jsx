@@ -14,14 +14,18 @@ import ContactPage from "./pages/ContactPage";
 import LoginPage from "./pages/LoginPage";
 import RoutesListingPage from "./pages/RoutesListingPage";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
+import UserDashboardPage from "./pages/UserDashboardPage";
+import UserProfilePage from "./pages/UserProfilePage";
+import ChangePasswordPage from "./pages/ChangePasswordPage";
 
 function AppContent() {
   const location = useLocation();
   const isAdminPage = location.pathname.startsWith("/admin");
+  const isUserDashPage = location.pathname.startsWith("/user");
 
   return (
     <>
-      {!isAdminPage && <Header />}
+      {!isAdminPage && !isUserDashPage && <Header />}
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/schedules/:routeId" element={<SchedulePage />} />
@@ -33,6 +37,9 @@ function AppContent() {
         <Route path="/routes-listing" element={<RoutesListingPage />} />
 
         {/* Protected — admin only */}
+        <Route path="/user/dashboard" element={<UserDashboardPage />} />
+        <Route path="/user/profile" element={<UserProfilePage />} />
+        <Route path="/user/change-password" element={<ChangePasswordPage />} />
         <Route path="/admin/dashboard" element={
           <ProtectedAdminRoute><AdminDashboardPage /></ProtectedAdminRoute>
         } />
@@ -43,7 +50,7 @@ function AppContent() {
           <ProtectedAdminRoute><AdminSchedulesPage /></ProtectedAdminRoute>
         } />
       </Routes>
-      {!isAdminPage && <Footer />}
+      {!isAdminPage && !isUserDashPage && <Footer />}
     </>
   );
 }

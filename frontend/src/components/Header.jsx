@@ -61,6 +61,11 @@ export default function Header() {
         )}
         {isLoggedIn ? (
           <div className="header-user">
+            {!isAdmin && (
+              <button className="btn-dashboard" onClick={() => navigate("/user/dashboard")}>
+                Dashboard
+              </button>
+            )}
             <span className="header-username">👤 {user.name}</span>
             <button className="btn-outline" onClick={() => { logout(); navigate("/"); }}>
               Logout
