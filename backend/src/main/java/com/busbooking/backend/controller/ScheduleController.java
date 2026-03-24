@@ -33,4 +33,14 @@ public class ScheduleController {
     public Schedule createSchedule(@Valid @RequestBody ScheduleRequest scheduleRequest) {
         return scheduleService.createSchedule(scheduleRequest);
     }
+
+    @PutMapping("/{id}")
+    public Schedule updateSchedule(@PathVariable Long id, @Valid @RequestBody ScheduleRequest scheduleRequest) {
+        return scheduleService.updateSchedule(id, scheduleRequest);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteSchedule(@PathVariable Long id) {
+        scheduleService.deleteSchedule(id);
+    }
 }

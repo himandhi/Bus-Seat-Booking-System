@@ -50,7 +50,7 @@ export default function Header() {
       {/* CTA Buttons */}
       <div className="header-actions">
         {isAdmin && (
-          <button className="btn-admin" onClick={() => navigate("/admin/bookings")}>
+          <button className="btn-admin" onClick={() => navigate("/admin/dashboard")}>
             🛡️ Admin Panel
           </button>
         )}

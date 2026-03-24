@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import "./LoginPage.css";
 
 // ── Modes: "login" | "register" | "forgot-email" | "forgot-verify" | "forgot-reset"
 export default function LoginPage() {
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const [mode, setMode] = useState("login");
   const [accountType, setAccountType] = useState("user"); // "user" | "admin"
@@ -45,8 +47,14 @@ export default function LoginPage() {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      // TODO: connect to Spring Boot /api/auth/login
-      if (accountType === "admin") navigate("/admin/bookings");
+      // TODO: replace with real api.post("/auth/login") call
+      const userData = {
+        name: loginEmail.split("@")[0],
+        email: loginEmail,
+        role: accountType, // "user" or "admin"
+      };
+      login(userData);
+      if (accountType === "admin") navigate("/admin/dashboard");
       else navigate("/");
     }, 1000);
   };

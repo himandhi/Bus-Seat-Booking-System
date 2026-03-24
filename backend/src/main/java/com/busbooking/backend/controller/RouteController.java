@@ -2,10 +2,7 @@ package com.busbooking.backend.controller;
 
 import com.busbooking.backend.entity.Route;
 import com.busbooking.backend.service.RouteService;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,5 +20,20 @@ public class RouteController {
     @GetMapping
     public List<Route> getAllRoutes() {
         return routeService.getAllRoutes();
+    }
+
+    @PostMapping
+    public Route addRoute(@RequestBody Route route) {
+        return routeService.addRoute(route);
+    }
+
+    @PutMapping("/{id}")
+    public Route updateRoute(@PathVariable Long id, @RequestBody Route route) {
+        return routeService.updateRoute(id, route);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteRoute(@PathVariable Long id) {
+        routeService.deleteRoute(id);
     }
 }

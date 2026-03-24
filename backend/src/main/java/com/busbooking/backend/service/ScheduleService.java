@@ -44,4 +44,26 @@ public class ScheduleService {
 
         return scheduleRepository.save(schedule);
     }
+
+    public Schedule updateSchedule(Long id, ScheduleRequest scheduleRequest) {
+        Schedule schedule = scheduleRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Schedule not found."));
+
+        Route route = routeRepository.findById(scheduleRequest.getRouteId())
+                .orElseThrow(() -> new ResourceNotFoundException("Route not found."));
+
+        schedule.setRoute(route);
+        schedule.setTravelDate(LocalDate.parse(scheduleRequest.getTravelDate()));
+        schedule.setDepartureTime(LocalTime.parse(scheduleRequest.getDepartureTime()));
+        schedule.setBusNumber(scheduleRequest.getBusNumber());
+        schedule.setTotalSeats(scheduleRequest.getTotalSeats());
+
+        return scheduleRepository.save(schedule);
+    }
+
+    public void deleteSchedule(Long id) {
+        Schedule schedule = scheduleRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Schedule not found."));
+        scheduleRepository.delete(schedule);
+    }
 }
