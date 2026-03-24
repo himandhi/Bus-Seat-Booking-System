@@ -18,4 +18,8 @@ public class BookingRequest {
 
     @NotNull(message = "Seat number is required")
     private Integer seatNumber;
+
+    private int advancePayment;
+    private int payAtBus;
+    private int totalPrice;
 }

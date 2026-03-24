@@ -13,4 +13,7 @@ public class BookingResponse {
     private Integer seatNumber;
     private String status;
     private Long scheduleId;
+    private int advancePayment;
+    private int payAtBus;
+    private int totalPrice;
 }

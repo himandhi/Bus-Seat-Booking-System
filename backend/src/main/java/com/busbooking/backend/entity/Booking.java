@@ -30,4 +30,13 @@ public class Booking {
 
     @Column(name = "status", nullable = false)
     private String status;
+
+    @Column(name = "advance_payment", nullable = false)
+    private int advancePayment;
+
+    @Column(name = "pay_at_bus", nullable = false)
+    private int payAtBus;
+
+    @Column(name = "total_price", nullable = false)
+    private int totalPrice;
 }

@@ -66,6 +66,11 @@ public class BookingService {
         booking.setStatus("BOOKED");
         booking.setSchedule(schedule);
 
+        // ── New payment fields ──────────────────────
+        booking.setAdvancePayment(bookingRequest.getAdvancePayment());
+        booking.setPayAtBus(bookingRequest.getPayAtBus());
+        booking.setTotalPrice(bookingRequest.getTotalPrice());
+
         Booking savedBooking = bookingRepository.save(booking);
 
         return new BookingResponse(
@@ -75,7 +80,10 @@ public class BookingService {
                 savedBooking.getPhoneNumber(),
                 savedBooking.getSeatNumber(),
                 savedBooking.getStatus(),
-                savedBooking.getSchedule().getId()
+                savedBooking.getSchedule().getId(),
+                savedBooking.getAdvancePayment(),
+                savedBooking.getPayAtBus(),
+                savedBooking.getTotalPrice()
         );
     }
 
@@ -93,7 +101,10 @@ public class BookingService {
                 updatedBooking.getPhoneNumber(),
                 updatedBooking.getSeatNumber(),
                 updatedBooking.getStatus(),
-                updatedBooking.getSchedule().getId()
+                updatedBooking.getSchedule().getId(),
+                updatedBooking.getAdvancePayment(),
+                updatedBooking.getPayAtBus(),
+                updatedBooking.getTotalPrice()
         );
     }
 
@@ -111,7 +122,10 @@ public class BookingService {
                 updatedBooking.getPhoneNumber(),
                 updatedBooking.getSeatNumber(),
                 updatedBooking.getStatus(),
-                updatedBooking.getSchedule().getId()
+                updatedBooking.getSchedule().getId(),
+                updatedBooking.getAdvancePayment(),
+                updatedBooking.getPayAtBus(),
+                updatedBooking.getTotalPrice()
         );
     }
 

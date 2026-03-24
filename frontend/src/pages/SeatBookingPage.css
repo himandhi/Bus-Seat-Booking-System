@@ -423,3 +423,39 @@
     font-size: 0.75rem;
   }
 }
+
+/* ── Price Blue ──────────────────────────────────────── */
+.price-blue {
+  color: #2563eb;
+  font-weight: 700;
+}
+
+/* ── Summary Divider ─────────────────────────────────── */
+.summary-divider {
+  height: 1px;
+  background: #e5e7eb;
+  margin: 0.5rem 0;
+}
+
+/* ── Summary Total Row ───────────────────────────────── */
+.summary-total-row {
+  font-weight: 700;
+}
+
+.summary-total {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #2563eb;
+}
+
+/* ── Summary Sub Rows ────────────────────────────────── */
+.summary-sub span:first-child {
+  color: #6b7280;
+  font-size: 0.82rem;
+}
+
+.summary-sub span:last-child {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #374151;
+}
