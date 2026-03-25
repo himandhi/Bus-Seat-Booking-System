@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import api from "../services/api";
 import "./SchedulePage.css";
 
 function SchedulePage() {
   const { routeId } = useParams();
   const navigate = useNavigate();
+  const { isLoggedIn } = useAuth();
 
   const [schedules, setSchedules] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -32,6 +34,11 @@ function SchedulePage() {
   };
 
   const handleBookNow = (scheduleId) => {
+    if (!isLoggedIn) {
+      alert("Please log in first to book a seat.");
+      navigate("/login");
+      return;
+    }
     navigate(`/booking/${scheduleId}`);
   };
 

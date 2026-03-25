@@ -233,7 +233,9 @@ export default function LoginPage() {
                   <label>Password</label>
                   <div className="pw-wrap">
                     <input type={showLoginPw ? "text" : "password"} placeholder="Enter your password" value={loginPassword} onChange={e => setLoginPassword(e.target.value)} />
-                    <button type="button" className="pw-toggle" onClick={() => setShowLoginPw(!showLoginPw)}>{showLoginPw ? "🙈" : "👁️"}</button>
+                    <button type="button" className="pw-toggle" onClick={() => setShowLoginPw(!showLoginPw)}>
+                      {showLoginPw ? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="18" height="18"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg> : <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="18" height="18"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>}
+                    </button>
                   </div>
                 </div>
                 <button className="auth-submit-btn" type="submit" disabled={loading}>
@@ -295,7 +297,9 @@ export default function LoginPage() {
                   <label>Password</label>
                   <div className="pw-wrap">
                     <input type={showRegPw ? "text" : "password"} placeholder="Create a password" value={regPassword} onChange={e => setRegPassword(e.target.value)} />
-                    <button type="button" className="pw-toggle" onClick={() => setShowRegPw(!showRegPw)}>{showRegPw ? "🙈" : "👁️"}</button>
+                    <button type="button" className="pw-toggle" onClick={() => setShowRegPw(!showRegPw)}>
+                      {showRegPw ? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="18" height="18"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg> : <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="18" height="18"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>}
+                    </button>
                   </div>
                 </div>
                 <div className="auth-field">
@@ -400,7 +404,9 @@ export default function LoginPage() {
                   <label>New Password</label>
                   <div className="pw-wrap">
                     <input type={showFpPw ? "text" : "password"} placeholder="Enter new password" value={fpNewPw} onChange={e => setFpNewPw(e.target.value)} />
-                    <button type="button" className="pw-toggle" onClick={() => setShowFpPw(!showFpPw)}>{showFpPw ? "🙈" : "👁️"}</button>
+                    <button type="button" className="pw-toggle" onClick={() => setShowFpPw(!showFpPw)}>
+                      {showFpPw ? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="18" height="18"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg> : <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="18" height="18"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>}
+                    </button>
                   </div>
                 </div>
                 <div className="auth-field">

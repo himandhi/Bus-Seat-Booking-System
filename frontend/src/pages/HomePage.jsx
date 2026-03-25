@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import api from "../services/api";
 import "./HomePage.css";
 
@@ -11,6 +12,7 @@ function HomePage() {
   const [droppingCity, setDroppingCity] = useState("");
   const [departureDate, setDepartureDate] = useState("");
   const navigate = useNavigate();
+  const { isLoggedIn } = useAuth();
 
   useEffect(() => {
     fetchRoutes();
@@ -29,6 +31,15 @@ function HomePage() {
   };
 
   const handleViewSchedules = (routeId) => {
+    navigate(`/schedules/${routeId}`);
+  };
+
+  const handleBookNow = (routeId) => {
+    if (!isLoggedIn) {
+      alert("Please log in first to book a seat.");
+      navigate("/login");
+      return;
+    }
     navigate(`/schedules/${routeId}`);
   };
 
@@ -194,7 +205,7 @@ function HomePage() {
                 </span>
                 <button
                   className="route-book-btn"
-                  onClick={() => handleViewSchedules(route.id)}
+                  onClick={() => handleBookNow(route.id)}
                 >
                   Book Now
                 </button>

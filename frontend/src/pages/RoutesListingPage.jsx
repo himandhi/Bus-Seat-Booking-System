@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import api from "../services/api";
 import "./RoutesListingPage.css";
 
 export default function RoutesListingPage() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { isLoggedIn } = useAuth();
 
   // Read filters passed from HomePage via navigation state
   const passedState = location.state || {};
@@ -225,7 +227,14 @@ export default function RoutesListingPage() {
 
                   <button
                     className="rlp-select-btn"
-                    onClick={() => navigate(`/booking/${schedule.id}`)}
+                    onClick={() => {
+                      if (!isLoggedIn) {
+                        alert("Please log in first to book a seat.");
+                        navigate("/login");
+                        return;
+                      }
+                      navigate(`/booking/${schedule.id}`);
+                    }}
                   >
                     Select Seat
                   </button>
