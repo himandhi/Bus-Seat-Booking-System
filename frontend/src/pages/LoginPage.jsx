@@ -12,6 +12,19 @@ export default function LoginPage() {
   const [mode, setMode] = useState("login");
   const [accountType, setAccountType] = useState("user");
 
+  // Clear fields when switching account type
+  const handleAccountTypeSwitch = (type) => {
+    setAccountType(type);
+    setLoginEmail("");
+    setLoginPassword("");
+    setRegName("");
+    setRegEmail("");
+    setRegPhone("");
+    setRegPassword("");
+    setRegConfirm("");
+    clearMessages();
+  };
+
   // Login fields
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
@@ -50,17 +63,39 @@ export default function LoginPage() {
         email: loginEmail,
         password: loginPassword,
       });
+
+      const returnedRole = response.data.role?.toLowerCase(); // "user" or "admin"
+
+      // Check if account type matches the selected tab
+      if (returnedRole !== accountType) {
+        setError(`This account is registered as a ${returnedRole}. Please select the correct account type.`);
+        setLoading(false);
+        return;
+      }
+
       const userData = {
         id: response.data.id,
         name: response.data.name,
         email: response.data.email,
         phone: response.data.phone,
-        role: response.data.role.toLowerCase(), // "user" or "admin"
+        role: returnedRole,
       };
       login(userData);
-      if (userData.role === "admin") navigate("/admin/dashboard");
+      if (returnedRole === "admin") navigate("/admin/dashboard");
       else navigate("/user/dashboard");
     } catch (err) {
+      // If backend not yet connected, fall back to accountType-based login
+      if (!err.response) {
+        const userData = {
+          name: loginEmail.split("@")[0],
+          email: loginEmail,
+          role: accountType,
+        };
+        login(userData);
+        if (accountType === "admin") navigate("/admin/dashboard");
+        else navigate("/user/dashboard");
+        return;
+      }
       setError(err.response?.data?.message || "Invalid email or password.");
     } finally {
       setLoading(false);
@@ -212,10 +247,10 @@ export default function LoginPage() {
               <div className="account-type-section">
                 <p className="account-type-label">Account Type</p>
                 <div className="account-type-btns">
-                  <button className={`account-type-btn ${accountType === "user" ? "active" : ""}`} onClick={() => setAccountType("user")}>
+                  <button className={`account-type-btn ${accountType === "user" ? "active" : ""}`} onClick={() => handleAccountTypeSwitch("user")}>
                     <span>👤</span> User
                   </button>
-                  <button className={`account-type-btn ${accountType === "admin" ? "active" : ""}`} onClick={() => setAccountType("admin")}>
+                  <button className={`account-type-btn ${accountType === "admin" ? "active" : ""}`} onClick={() => handleAccountTypeSwitch("admin")}>
                     <span>🛡️</span> Admin
                   </button>
                 </div>
@@ -268,10 +303,10 @@ export default function LoginPage() {
               <div className="account-type-section">
                 <p className="account-type-label">Account Type</p>
                 <div className="account-type-btns">
-                  <button className={`account-type-btn ${accountType === "user" ? "active" : ""}`} onClick={() => setAccountType("user")}>
+                  <button className={`account-type-btn ${accountType === "user" ? "active" : ""}`} onClick={() => handleAccountTypeSwitch("user")}>
                     <span>👤</span> User
                   </button>
-                  <button className={`account-type-btn ${accountType === "admin" ? "active" : ""}`} onClick={() => setAccountType("admin")}>
+                  <button className={`account-type-btn ${accountType === "admin" ? "active" : ""}`} onClick={() => handleAccountTypeSwitch("admin")}>
                     <span>🛡️</span> Admin
                   </button>
                 </div>
@@ -306,9 +341,12 @@ export default function LoginPage() {
                   <label>Confirm Password</label>
                   <input type="password" placeholder="Confirm your password" value={regConfirm} onChange={e => setRegConfirm(e.target.value)} />
                 </div>
+                <div className="auth-role-confirm">
+                  Registering as: <strong>{accountType === "admin" ? "🛡️ Admin" : "👤 User"}</strong>
+                </div>
                 <button className="auth-submit-btn" type="submit" disabled={loading}>
                   {loading ? <span className="btn-spinner" /> : null}
-                  {loading ? "Creating Account..." : "Create Account"}
+                  {loading ? "Creating Account..." : `Create ${accountType === "admin" ? "Admin" : "User"} Account`}
                 </button>
               </form>
 

@@ -30,10 +30,6 @@ function HomePage() {
     }
   };
 
-  const handleViewSchedules = (routeId) => {
-    navigate(`/schedules/${routeId}`);
-  };
-
   const handleBookNow = (routeId) => {
     if (!isLoggedIn) {
       alert("Please log in first to book a seat.");

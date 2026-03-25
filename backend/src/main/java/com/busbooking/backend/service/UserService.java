@@ -19,8 +19,12 @@ public class UserService {
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new RuntimeException("Email already registered.");
         }
-        user.setRole("USER");
-        // TODO: hash password with BCrypt before saving
+        // Use the role sent from frontend (USER or ADMIN)
+        // If no role provided, default to USER
+        if (user.getRole() == null || user.getRole().isBlank()) {
+            user.setRole("USER");
+        }
+
         return userRepository.save(user);
     }
 
@@ -28,7 +32,7 @@ public class UserService {
     public User login(String email, String password) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Invalid email or password."));
-        // TODO: use BCrypt to compare hashed password
+
         if (!user.getPassword().equals(password)) {
             throw new RuntimeException("Invalid email or password.");
         }
@@ -49,7 +53,7 @@ public class UserService {
     public void changePassword(Long id, String currentPassword, String newPassword) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found."));
-        // TODO: use BCrypt to compare hashed password
+        
         if (!user.getPassword().equals(currentPassword)) {
             throw new RuntimeException("Current password is incorrect.");
         }
