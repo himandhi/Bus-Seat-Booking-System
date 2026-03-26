@@ -84,6 +84,8 @@ body {
 [data-theme="dark"] .why-card p  { color: var(--text3); }
 [data-theme="dark"] .routes-heading { color: var(--text); }
 [data-theme="dark"] .routes-subheading { color: var(--text3); }
+[data-theme="dark"] .why-title { color: var(--text) !important; }
+[data-theme="dark"] .why-subtitle { color: var(--text3) !important; }
 [data-theme="dark"] .route-card {
   background: var(--surface);
   border-color: var(--border);

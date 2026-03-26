@@ -308,12 +308,15 @@ export default function AdminDashboardPage() {
                         <td><span className={`adm-status adm-status-${b.status?.toLowerCase()}`}>{b.status}</span></td>
                         <td>
                           <div className="adm-action-btns">
-                            {b.status !== "RESERVED" && b.status !== "CANCELLED" && (
-                              <button className="adm-btn-reserve" onClick={() => handleStatusChange(b.id, "RESERVED")}>Reserve</button>
+                            {/* BOOKED → Reserve + Cancel */}
+                            {b.status === "BOOKED" && (
+                              <>
+                                <button className="adm-btn-reserve" onClick={() => handleStatusChange(b.id, "RESERVED")}>Reserve</button>
+                                <button className="adm-btn-cancel" onClick={() => handleStatusChange(b.id, "CANCELLED")}>Cancel</button>
+                              </>
                             )}
-                            {b.status !== "CANCELLED" && (
-                              <button className="adm-btn-cancel" onClick={() => handleStatusChange(b.id, "CANCELLED")}>Cancel</button>
-                            )}
+                            {/* RESERVED → nothing */}
+                            {/* CANCELLED → nothing */}
                           </div>
                         </td>
                       </tr>
