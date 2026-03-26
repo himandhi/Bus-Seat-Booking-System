@@ -473,3 +473,68 @@
   font-weight: 500;
   margin-top: 2px;
 }
+
+/* ── Dark Mode fixes ─────────────────────────────────── */
+[data-theme="dark"] .booking-page { background: var(--bg); }
+
+[data-theme="dark"] .booking-page-header {
+  background: linear-gradient(135deg, #0a1929 0%, #0f2d7a 100%);
+}
+
+[data-theme="dark"] .schedule-info-card,
+[data-theme="dark"] .seat-map-container,
+[data-theme="dark"] .seat-legend,
+[data-theme="dark"] .booking-form-card {
+  background: var(--surface);
+  border-color: var(--border);
+}
+
+[data-theme="dark"] .bus-badge {
+  background: #1e3a5f;
+  color: #93c5fd;
+  border-color: #2563eb;
+}
+
+[data-theme="dark"] .info-card-title { color: var(--text); }
+[data-theme="dark"] .info-label      { color: var(--text3); }
+[data-theme="dark"] .info-value      { color: var(--text); }
+[data-theme="dark"] .price-blue      { color: #60a5fa; }
+
+[data-theme="dark"] .bus-front {
+  color: var(--text4);
+  border-color: var(--border);
+}
+
+[data-theme="dark"] .legend-item     { color: var(--text2); }
+
+[data-theme="dark"] .booking-summary {
+  background: var(--surface2);
+  border-color: var(--border);
+}
+
+[data-theme="dark"] .summary-row span:first-child { color: var(--text3); }
+[data-theme="dark"] .summary-row span:last-child  { color: var(--text); }
+[data-theme="dark"] .summary-total                { color: #60a5fa; }
+
+[data-theme="dark"] .form-card-title  { color: var(--text); }
+[data-theme="dark"] .form-group label { color: var(--text2); }
+
+[data-theme="dark"] .form-group input {
+  background: var(--input-bg);
+  border-color: var(--border);
+  color: var(--text);
+}
+
+[data-theme="dark"] .selected-seat-banner {
+  background: #14432a;
+  border-color: #166534;
+  color: #86efac;
+}
+
+[data-theme="dark"] .input-prefilled {
+  background: #14432a !important;
+  border-color: #166534 !important;
+  color: #86efac !important;
+}
+
+[data-theme="dark"] .field-note { color: #4ade80; }
