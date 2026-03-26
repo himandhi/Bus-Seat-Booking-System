@@ -9,44 +9,43 @@ export function AuthProvider({ children }) {
     return saved ? JSON.parse(saved) : null;
   });
 
-  // ── Dark mode — only persists if admin, resets on logout
+  // ── Dark mode — available for ANY logged-in user (admin or user)
   const [darkMode, setDarkMode] = useState(() => {
     const saved = localStorage.getItem("busgo_user");
     const savedUser = saved ? JSON.parse(saved) : null;
-    // Only restore dark mode if user is admin
-    if (savedUser?.role === "admin") {
+    // Restore dark mode for any logged-in user
+    if (savedUser) {
       return localStorage.getItem("busgo_dark") === "true";
     }
     return false;
   });
 
-  const isAdmin = user?.role === "admin";
+  const isAdmin    = user?.role === "admin";
   const isLoggedIn = !!user;
 
-  // ── Apply dark mode to entire document
+  // ── Apply dark mode to entire document whenever it changes
   useEffect(() => {
-    if (isAdmin && darkMode) {
+    if (isLoggedIn && darkMode) {
       document.documentElement.setAttribute("data-theme", "dark");
     } else {
       document.documentElement.removeAttribute("data-theme");
     }
-  }, [darkMode, isAdmin]);
+  }, [darkMode, isLoggedIn]);
 
+  // ── Toggle dark mode — available to any logged-in user
   const toggleDarkMode = () => {
-    if (!isAdmin) return; // only admin can toggle
+    if (!isLoggedIn) return; // must be logged in
     const next = !darkMode;
     setDarkMode(next);
-    localStorage.setItem("busgo_dark", next);
+    localStorage.setItem("busgo_dark", String(next));
   };
 
   const login = (userData) => {
     setUser(userData);
     localStorage.setItem("busgo_user", JSON.stringify(userData));
-    // Restore dark mode preference on login if admin
-    if (userData.role === "admin") {
-      const savedDark = localStorage.getItem("busgo_dark") === "true";
-      setDarkMode(savedDark);
-    }
+    // Restore this user's dark mode preference on login
+    const savedDark = localStorage.getItem("busgo_dark") === "true";
+    setDarkMode(savedDark);
   };
 
   const logout = () => {

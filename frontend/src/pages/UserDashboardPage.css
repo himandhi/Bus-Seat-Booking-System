@@ -338,3 +338,103 @@
   .udp-stats { grid-template-columns: 1fr; }
   .udp-nav { display: none; }
 }
+
+/* ── Theme Toggle Button ─────────────────────────────── */
+.udp-theme-toggle {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f9fafb;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #6b7280;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  flex-shrink: 0;
+}
+
+.udp-theme-toggle:hover {
+  border-color: #2563eb;
+  color: #2563eb;
+  background: #eff6ff;
+}
+
+/* ── Dark Mode ───────────────────────────────────────── */
+.udp-dark {
+  background: #0f172a;
+  color: #f1f5f9;
+}
+
+.udp-dark .udp-header {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+.udp-dark .udp-logo-text { color: #93c5fd; }
+
+.udp-dark .udp-nav button { color: #94a3b8; }
+.udp-dark .udp-nav button:hover,
+.udp-dark .udp-nav-active { color: #60a5fa !important; }
+
+.udp-dark .udp-profile-btn { color: #94a3b8; }
+
+.udp-dark .udp-dropdown {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+.udp-dark .udp-dropdown button { color: #e2e8f0; }
+.udp-dark .udp-dropdown button:hover { background: #273549; color: #60a5fa; }
+
+.udp-dark .udp-user-info { color: #94a3b8; }
+
+.udp-dark .udp-logout-btn {
+  background: transparent;
+  border-color: #dc2626;
+  color: #f87171;
+}
+
+.udp-dark .udp-theme-toggle {
+  background: #1e293b;
+  border-color: #334155;
+  color: #94a3b8;
+}
+
+.udp-dark .udp-theme-toggle:hover {
+  border-color: #60a5fa;
+  color: #60a5fa;
+}
+
+.udp-dark .udp-stat-card {
+  background: #1e293b;
+  border: 1px solid #334155;
+}
+
+.udp-dark .udp-stat-label { color: #94a3b8; }
+.udp-dark .udp-stat-value { color: #f1f5f9; }
+
+.udp-dark .udp-table-wrap {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+.udp-dark .udp-table thead { background: #1d4ed8; }
+
+.udp-dark .udp-table td {
+  color: #e2e8f0;
+  border-color: #273549;
+}
+
+.udp-dark .udp-table tbody tr:hover { background: #273549; }
+
+.udp-dark .udp-ref {
+  background: #1e3a5f;
+  color: #93c5fd;
+}
+
+.udp-dark .udp-seat {
+  background: #273549;
+  color: #e2e8f0;
+}
