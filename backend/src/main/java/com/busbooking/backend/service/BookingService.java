@@ -33,6 +33,11 @@ public class BookingService {
         return bookingRepository.findBySchedule_Id(scheduleId);
     }
 
+    // ── NEW: Get bookings by userId
+    public List<Booking> getBookingsByUser(Long userId) {
+        return bookingRepository.findByUserId(userId);
+    }
+
     public List<Integer> getBookedSeatNumbers(Long scheduleId) {
         return bookingRepository.findBySchedule_Id(scheduleId).stream()
                 .filter(booking ->
@@ -66,10 +71,13 @@ public class BookingService {
         booking.setStatus("BOOKED");
         booking.setSchedule(schedule);
 
-        // ── New payment fields ──────────────────────
+        // ── Payment fields
         booking.setAdvancePayment(bookingRequest.getAdvancePayment());
         booking.setPayAtBus(bookingRequest.getPayAtBus());
         booking.setTotalPrice(bookingRequest.getTotalPrice());
+
+        // ── NEW: Link booking to user
+        booking.setUserId(bookingRequest.getUserId());
 
         Booking savedBooking = bookingRepository.save(booking);
 

@@ -39,4 +39,7 @@ public class Booking {
 
     @Column(name = "total_price", nullable = false)
     private int totalPrice;
+
+    @Column(name = "user_id")
+    private Long userId;
 }

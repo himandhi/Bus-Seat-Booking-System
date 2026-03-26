@@ -459,3 +459,17 @@
   font-weight: 600;
   color: #374151;
 }
+
+/* ── Pre-filled fields ───────────────────────────────── */
+.input-prefilled {
+  background: #f0fdf4 !important;
+  border-color: #86efac !important;
+  color: #166534 !important;
+}
+
+.field-note {
+  font-size: 0.75rem;
+  color: #16a34a;
+  font-weight: 500;
+  margin-top: 2px;
+}

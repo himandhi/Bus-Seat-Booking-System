@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import api from "../services/api";
 import "./SeatBookingPage.css";
 
@@ -9,13 +10,15 @@ const ADVANCE_PERCENT = 0.30;
 function SeatBookingPage() {
   const { scheduleId } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const [schedule, setSchedule] = useState(null);
   const [bookedSeats, setBookedSeats] = useState([]);
   const [selectedSeats, setSelectedSeats] = useState([]);
 
-  const [passengerName, setPassengerName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
+  // Auto-fill from logged-in user
+  const [passengerName, setPassengerName] = useState(user?.name ?? "");
+  const [phoneNumber, setPhoneNumber] = useState(user?.phone ?? "");
 
   const [loading, setLoading] = useState(true);
   const [submitLoading, setSubmitLoading] = useState(false);
@@ -95,6 +98,7 @@ function SeatBookingPage() {
           advancePayment: Math.round(pricePerSeat * ADVANCE_PERCENT),
           payAtBus: pricePerSeat - Math.round(pricePerSeat * ADVANCE_PERCENT),
           totalPrice: pricePerSeat,
+          userId: user?.id ?? null,
         })
       );
 
@@ -250,7 +254,9 @@ function SeatBookingPage() {
                   value={passengerName}
                   onChange={e => setPassengerName(e.target.value)}
                   placeholder="e.g. John Perera"
+                  className={user?.name ? "input-prefilled" : ""}
                 />
+                {user?.name && <span className="field-note">✓ Auto-filled from your account</span>}
               </div>
 
               <div className="form-group">
@@ -262,7 +268,9 @@ function SeatBookingPage() {
                   onChange={e => setPhoneNumber(e.target.value)}
                   placeholder="10-digit number"
                   maxLength={10}
+                  className={user?.phone ? "input-prefilled" : ""}
                 />
+                {user?.phone && <span className="field-note">✓ Auto-filled from your account</span>}
               </div>
 
               {/* Price Breakdown */}

@@ -158,7 +158,7 @@
 
 /* ── Hero Banner ─────────────────────────────────────── */
 .udp-hero {
-  background: linear-gradient(135deg, #374151 0%, #6b7280 100%);
+  background: linear-gradient(135deg, #0f2d7a 0%, #1a3fa3 40%, #1e50c8 70%, #2563eb 100%);
   padding: 3rem 2rem;
   text-align: center;
 }
@@ -168,6 +168,7 @@
   font-weight: 800;
   color: white;
   margin: 0;
+  letter-spacing: -0.5px;
 }
 
 /* ── Body ────────────────────────────────────────────── */
@@ -437,4 +438,45 @@
 .udp-dark .udp-seat {
   background: #273549;
   color: #e2e8f0;
+}
+
+/* ── Refresh Row ─────────────────────────────────────── */
+.udp-refresh-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.udp-refresh-btn {
+  background: white;
+  border: 1.5px solid #2563eb;
+  color: #2563eb;
+  font-size: 0.88rem;
+  font-weight: 600;
+  padding: 0.45rem 1.1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.2s, color 0.2s;
+}
+
+.udp-refresh-btn:hover {
+  background: #2563eb;
+  color: white;
+}
+
+/* ── Dark mode hero ──────────────────────────────────── */
+.udp-dark .udp-hero {
+  background: linear-gradient(135deg, #0a1929 0%, #0f2d7a 100%);
+}
+
+.udp-dark .udp-refresh-btn {
+  background: #1e293b;
+  border-color: #3b82f6;
+  color: #60a5fa;
+}
+
+.udp-dark .udp-refresh-btn:hover {
+  background: #2563eb;
+  color: white;
 }

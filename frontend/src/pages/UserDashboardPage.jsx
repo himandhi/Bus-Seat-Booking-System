@@ -19,11 +19,30 @@ export default function UserDashboardPage() {
 
   const fetchUserBookings = async () => {
     try {
-      const response = await api.get("/bookings");
-      // Filter bookings by logged-in user's phone or name
-      const userBookings = response.data.filter(
-        b => b.passengerName?.toLowerCase() === user?.name?.toLowerCase()
-      );
+      let userBookings = [];
+
+      if (user?.id) {
+        // Best: fetch by userId directly from dedicated endpoint
+        try {
+          const res = await api.get(`/bookings/user/${user.id}`);
+          userBookings = res.data;
+        } catch {
+          // Fallback if endpoint not available yet — filter from all bookings
+          const response = await api.get("/bookings");
+          userBookings = response.data.filter(b => {
+            if (user?.phone) return b.phoneNumber === user.phone;
+            return b.passengerName?.toLowerCase().trim() === user?.name?.toLowerCase().trim();
+          });
+        }
+      } else {
+        // No user ID — filter by phone or name
+        const response = await api.get("/bookings");
+        userBookings = response.data.filter(b => {
+          if (user?.phone) return b.phoneNumber === user.phone;
+          return b.passengerName?.toLowerCase().trim() === user?.name?.toLowerCase().trim();
+        });
+      }
+
       setBookings(userBookings);
     } catch (err) {
       setError("Failed to load bookings.");
@@ -103,6 +122,13 @@ export default function UserDashboardPage() {
       {/* ── Body ── */}
       <div className="udp-body">
 
+        {/* Refresh button */}
+        <div className="udp-refresh-row">
+          <button className="udp-refresh-btn" onClick={fetchUserBookings}>
+            ↻ Refresh Bookings
+          </button>
+        </div>
+
         {/* Stats Cards */}
         <div className="udp-stats">
           <div className="udp-stat-card udp-stat-green">
@@ -160,7 +186,11 @@ export default function UserDashboardPage() {
               </thead>
               <tbody>
                 {bookings.length === 0 ? (
-                  <tr><td colSpan="10" className="udp-empty-cell">No booked ticket found</td></tr>
+                  <tr>
+                    <td colSpan="10" className="udp-empty-cell">
+                      No booked tickets found. Book your first ticket using the <strong>Buy Tickets</strong> button above!
+                    </td>
+                  </tr>
                 ) : (
                   bookings.map(b => (
                     <tr key={b.id}>

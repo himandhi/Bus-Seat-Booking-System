@@ -35,6 +35,12 @@ public class BookingController {
         return bookingService.getBookedSeatNumbers(scheduleId);
     }
 
+    // ── New: get all bookings for a specific user
+    @GetMapping("/user/{userId}")
+    public List<Booking> getBookingsByUser(@PathVariable Long userId) {
+        return bookingService.getBookingsByUser(userId);
+    }
+
     @PostMapping
     public BookingResponse createBooking(@Valid @RequestBody BookingRequest bookingRequest) {
         return bookingService.createBooking(bookingRequest);

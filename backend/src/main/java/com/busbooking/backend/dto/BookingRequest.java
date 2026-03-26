@@ -22,4 +22,5 @@ public class BookingRequest {
     private int advancePayment;
     private int payAtBus;
     private int totalPrice;
+    private Long userId;
 }
