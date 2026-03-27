@@ -61,15 +61,19 @@ export default function AdminDashboardPage() {
   };
 
   // ── Stats
-  const activeBookings = bookings.filter(b => b.status === "BOOKED" || b.status === "RESERVED");
+  const activeBookings = bookings.filter(b => b.status === "BOOKED" || b.status === "RESERVED" || b.status === "PENDING");
   const totalRevenue = activeBookings.reduce((sum, b) => sum + (b.totalPrice || 0), 0);
 
   // ── Booking actions
   const handleStatusChange = async (bookingId, newStatus) => {
+    // Save scroll position before re-fetching
+    const scrollY = window.scrollY;
     try {
       const endpoint = newStatus === "CANCELLED" ? `/bookings/${bookingId}/cancel` : `/bookings/${bookingId}/reserve`;
       await api.put(endpoint);
       await fetchAll();
+      // Restore scroll position after re-render
+      requestAnimationFrame(() => window.scrollTo({ top: scrollY, behavior: "instant" }));
     } catch (err) { alert("Failed to update booking status."); }
   };
 
@@ -308,15 +312,13 @@ export default function AdminDashboardPage() {
                         <td><span className={`adm-status adm-status-${b.status?.toLowerCase()}`}>{b.status}</span></td>
                         <td>
                           <div className="adm-action-btns">
-                            {/* BOOKED → Reserve + Cancel */}
-                            {b.status === "BOOKED" && (
+                            {/* PENDING only → Reserve + Cancel */}
+                            {b.status === "PENDING" && (
                               <>
                                 <button className="adm-btn-reserve" onClick={() => handleStatusChange(b.id, "RESERVED")}>Reserve</button>
                                 <button className="adm-btn-cancel" onClick={() => handleStatusChange(b.id, "CANCELLED")}>Cancel</button>
                               </>
                             )}
-                            {/* RESERVED → nothing */}
-                            {/* CANCELLED → nothing */}
                           </div>
                         </td>
                       </tr>

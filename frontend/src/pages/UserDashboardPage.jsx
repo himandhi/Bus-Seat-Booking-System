@@ -54,9 +54,9 @@ export default function UserDashboardPage() {
 
   const handleLogout = () => { logout(); navigate("/"); };
 
-  const bookedCount    = bookings.filter(b => b.status === "BOOKED").length;
+  const bookedCount    = bookings.filter(b => b.status === "BOOKED" || b.status === "RESERVED").length;
   const cancelledCount = bookings.filter(b => b.status === "CANCELLED").length;
-  const pendingCount   = bookings.filter(b => b.status === "RESERVED").length;
+  const pendingCount   = bookings.filter(b => b.status === "PENDING").length;
 
   return (
     <div className={`udp-page ${darkMode ? "udp-dark" : ""}`}>
@@ -203,7 +203,14 @@ export default function UserDashboardPage() {
                       <td>Rs. {(b.totalPrice || 0).toLocaleString()}</td>
                       <td>Rs. {(b.advancePayment || 0).toLocaleString()}</td>
                       <td>Rs. {(b.payAtBus || 0).toLocaleString()}</td>
-                      <td><span className={`udp-status udp-status-${b.status?.toLowerCase()}`}>{b.status}</span></td>
+                      <td>
+                        <span className={`udp-status udp-status-${b.status?.toLowerCase()}`}>
+                          {b.status === "PENDING" ? "PENDING" :
+                           b.status === "BOOKED"  ? "CONFIRMED" :
+                           b.status === "RESERVED" ? "RESERVED" :
+                           b.status === "CANCELLED" ? "CANCELLED" : b.status}
+                        </span>
+                      </td>
                     </tr>
                   ))
                 )}

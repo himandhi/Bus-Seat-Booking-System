@@ -106,7 +106,12 @@ function BookingSuccessPage() {
           </div>
           <div className="bsp-detail-row">
             <span>Status</span>
-            <span className={`bsp-status bsp-status-${status.toLowerCase()}`}>{status}</span>
+            <span className={`bsp-status bsp-status-${status.toLowerCase()}`}>
+                    {status === "PENDING" ? "⏳ Pending Confirmation" :
+                     status === "BOOKED"  ? "✅ Confirmed" :
+                     status === "RESERVED" ? "📌 Reserved" :
+                     status === "CANCELLED" ? "❌ Cancelled" : status}
+                  </span>
           </div>
         </div>
 
@@ -129,7 +134,7 @@ function BookingSuccessPage() {
 
         {/* ── Notice ── */}
         <div className="bsp-notice">
-          ℹ️ Please pay <strong>Rs. {advancePayment.toLocaleString()}</strong> as advance payment to confirm your booking. The remaining <strong>Rs. {payAtBus.toLocaleString()}</strong> is payable on the bus.
+          ⏳ Your booking is <strong>pending confirmation</strong> by the admin. Once confirmed, please pay <strong>Rs. {advancePayment.toLocaleString()}</strong> as advance payment. The remaining <strong>Rs. {payAtBus.toLocaleString()}</strong> is payable on the bus.
         </div>
 
         {/* ── Actions ── */}

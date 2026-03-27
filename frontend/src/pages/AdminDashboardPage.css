@@ -415,3 +415,24 @@
   .adm-theme-toggle span { display: none; }
 }
 @media (max-width: 640px) { .adm-stats { grid-template-columns: 1fr; } .adm-body { padding: 1.5rem 1rem 3rem; } }
+
+/* ── Pending Status ──────────────────────────────────── */
+.adm-status-pending {
+  background: #fef9c3;
+  color: #854d0e;
+}
+
+/* ── Confirm Button ──────────────────────────────────── */
+.adm-btn-confirm {
+  background: #dcfce7;
+  border: 1px solid #86efac;
+  color: #166534;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.adm-btn-confirm:hover { background: #bbf7d0; }

@@ -33,7 +33,7 @@ public class BookingService {
         return bookingRepository.findBySchedule_Id(scheduleId);
     }
 
-    // ── NEW: Get bookings by userId
+    // ── Get bookings by userId
     public List<Booking> getBookingsByUser(Long userId) {
         return bookingRepository.findByUserId(userId);
     }
@@ -41,18 +41,23 @@ public class BookingService {
     public List<Integer> getBookedSeatNumbers(Long scheduleId) {
         return bookingRepository.findBySchedule_Id(scheduleId).stream()
                 .filter(booking ->
-                        "BOOKED".equalsIgnoreCase(booking.getStatus()) ||
+                        // Include PENDING so seats can't be double-booked
+                        "PENDING".equalsIgnoreCase(booking.getStatus()) ||
+                                "BOOKED".equalsIgnoreCase(booking.getStatus()) ||
                                 "RESERVED".equalsIgnoreCase(booking.getStatus()))
                 .map(Booking::getSeatNumber)
                 .collect(Collectors.toList());
     }
 
     public BookingResponse createBooking(BookingRequest bookingRequest) {
+
+        // Check if seat is already taken (including PENDING seats)
         boolean seatAlreadyBooked = bookingRepository.findBySchedule_Id(bookingRequest.getScheduleId())
                 .stream()
                 .anyMatch(booking ->
                         booking.getSeatNumber().equals(bookingRequest.getSeatNumber()) &&
-                                ("BOOKED".equalsIgnoreCase(booking.getStatus()) ||
+                                ("PENDING".equalsIgnoreCase(booking.getStatus()) ||
+                                        "BOOKED".equalsIgnoreCase(booking.getStatus()) ||
                                         "RESERVED".equalsIgnoreCase(booking.getStatus()))
                 );
 
@@ -68,7 +73,10 @@ public class BookingService {
         booking.setPassengerName(bookingRequest.getPassengerName());
         booking.setPhoneNumber(bookingRequest.getPhoneNumber());
         booking.setSeatNumber(bookingRequest.getSeatNumber());
-        booking.setStatus("BOOKED");
+
+        // ── Initial status is PENDING (admin must confirm/cancel)
+        booking.setStatus("PENDING");
+
         booking.setSchedule(schedule);
 
         // ── Payment fields
@@ -76,7 +84,7 @@ public class BookingService {
         booking.setPayAtBus(bookingRequest.getPayAtBus());
         booking.setTotalPrice(bookingRequest.getTotalPrice());
 
-        // ── NEW: Link booking to user
+        // ── Link booking to user
         booking.setUserId(bookingRequest.getUserId());
 
         Booking savedBooking = bookingRepository.save(booking);
@@ -120,11 +128,12 @@ public class BookingService {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new ResourceNotFoundException("Booking not found."));
 
-        booking.setStatus("RESERVED");
+        // ── Admin confirming booking → BOOKED
+        booking.setStatus("BOOKED");
         Booking updatedBooking = bookingRepository.save(booking);
 
         return new BookingResponse(
-                "Booking reserved successfully",
+                "Booking confirmed successfully",
                 updatedBooking.getBookingId(),
                 updatedBooking.getPassengerName(),
                 updatedBooking.getPhoneNumber(),

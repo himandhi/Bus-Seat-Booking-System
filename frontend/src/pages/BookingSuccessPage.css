@@ -253,3 +253,9 @@
     flex-direction: column;
   }
 }
+
+/* ── Pending status ──────────────────────────────────── */
+.bsp-status-pending {
+  background: #fef9c3;
+  color: #854d0e;
+}
