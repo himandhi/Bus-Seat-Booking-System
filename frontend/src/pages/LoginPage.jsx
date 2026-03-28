@@ -6,7 +6,6 @@ import "./LoginPage.css";
 
 // ── Admin credentials ─────────────────────────────────────
 const ADMIN_EMAIL = "busgoadmin12@gmail.com";
-// Admin password stored in state so it can be changed via forgot password
 let ADMIN_PASSWORD_CURRENT = "Busgo888@";
 
 // ── SVG Eye Icons ─────────────────────────────────────────
@@ -26,6 +25,18 @@ const EyeClosed = () => (
   </svg>
 );
 
+// ── PASSWORD VALIDATION — outside component, never flagged as unused ──────────
+// Called inside handleRegister to validate password before submitting
+function getPasswordErrors(pw) {
+  const errs = [];
+  if (pw.length < 8)              errs.push("at least 8 characters");
+  if (!/[0-9]/.test(pw))          errs.push("at least one number (0-9)");
+  if (!/[^a-zA-Z0-9]/.test(pw))   errs.push("at least one special character/symbol");
+  if (!/[A-Z]/.test(pw))          errs.push("at least one uppercase letter (A-Z)");
+  if (!/[a-z]/.test(pw))          errs.push("at least one lowercase letter (a-z)");
+  return errs;
+}
+
 // Modes: login | register | forgot-email | forgot-verify | forgot-reset
 //        admin-forgot-email | admin-forgot-verify | admin-forgot-reset
 export default function LoginPage() {
@@ -42,11 +53,11 @@ export default function LoginPage() {
   const [loginToast,    setLoginToast]    = useState(false);
 
   // Register (user only)
-  const [regName,     setRegName]     = useState("");
-  const [regEmail,    setRegEmail]    = useState("");
-  const [regPhone,    setRegPhone]    = useState("");
-  const [regPassword, setRegPassword] = useState("");
-  const [regConfirm,  setRegConfirm]  = useState("");
+  const [regName,        setRegName]        = useState("");
+  const [regEmail,       setRegEmail]       = useState("");
+  const [regPhone,       setRegPhone]       = useState("");
+  const [regPassword,    setRegPassword]    = useState("");
+  const [regConfirm,     setRegConfirm]     = useState("");
   const [showRegPw,      setShowRegPw]      = useState(false);
   const [showRegConfirm, setShowRegConfirm] = useState(false);
 
@@ -62,22 +73,13 @@ export default function LoginPage() {
   const [adminFpNewPw,     setAdminFpNewPw]     = useState("");
   const [adminFpConfirmPw, setAdminFpConfirmPw] = useState("");
   const [showAdminFpPw,    setShowAdminFpPw]    = useState(false);
-  const [sentCode,         setSentCode]         = useState(""); // store sent code for verification
+  const [sentCode,         setSentCode]         = useState("");
 
   const [error,   setError]   = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
 
   const clearMessages = () => { setError(""); setSuccess(""); };
-
-  // ── Password strength validation
-  const getPasswordErrors = (pw) => {
-    const errs = [];
-    if (pw.length < 8)           errs.push("At least 8 characters");
-    if (!/[0-9]/.test(pw))       errs.push("At least one number");
-    if (!/[^a-zA-Z0-9]/.test(pw)) errs.push("At least one special character");
-    return errs;
-  };
   const switchMode    = (m)  => { setMode(m); clearMessages(); };
 
   const handleAccountTypeSwitch = (type) => {
@@ -87,22 +89,15 @@ export default function LoginPage() {
     if (type === "admin" && mode === "register") switchMode("login");
   };
 
-  // Show login success toast then navigate
   const showSuccessAndNavigate = (path) => {
     setLoginToast(true);
-    setTimeout(() => {
-      setLoginToast(false);
-      navigate(path);
-    }, 1500);
+    setTimeout(() => { setLoginToast(false); navigate(path); }, 1500);
   };
 
-  // ── Login
+  // ── Login ─────────────────────────────────────────────────
   const handleLogin = async (e) => {
-    e.preventDefault();
-    clearMessages();
+    e.preventDefault(); clearMessages();
     if (!loginEmail || !loginPassword) { setError("Please fill in all fields."); return; }
-
-    // Admin — hardcoded check
     if (accountType === "admin") {
       if (loginEmail !== ADMIN_EMAIL || loginPassword !== ADMIN_PASSWORD_CURRENT) {
         setError("Invalid admin credentials."); return;
@@ -111,32 +106,34 @@ export default function LoginPage() {
       showSuccessAndNavigate("/admin/dashboard");
       return;
     }
-
-    // User — backend API
     setLoading(true);
     try {
       const res = await api.post("/users/login", { email: loginEmail, password: loginPassword });
-      login({
-        id:    res.data.id,
-        name:  res.data.name,
-        email: res.data.email,
-        phone: res.data.phone,
-        role:  res.data.role?.toLowerCase(),
-      });
+      login({ id: res.data.id, name: res.data.name, email: res.data.email, phone: res.data.phone, role: res.data.role?.toLowerCase() });
       showSuccessAndNavigate("/user/dashboard");
     } catch (err) {
       setError(err.response?.data?.message || "Invalid email or password.");
-    } finally {
-      setLoading(false);
-    }
+    } finally { setLoading(false); }
   };
 
-  // ── Register (user only)
+  // ── Register ──────────────────────────────────────────────
+  // getPasswordErrors is called here — that's why it must exist outside
   const handleRegister = async (e) => {
     e.preventDefault(); clearMessages();
-    if (!regName || !regEmail || !regPhone || !regPassword || !regConfirm) { setError("Please fill in all fields."); return; }
-    if (regPassword !== regConfirm) { setError("Passwords do not match."); return; }
-    if (!/^\d{10}$/.test(regPhone))  { setError("Phone number must be 10 digits."); return; }
+    if (!regName || !regEmail || !regPhone || !regPassword || !regConfirm) {
+      setError("Please fill in all fields."); return;
+    }
+    if (!/^\d{10}$/.test(regPhone)) { setError("Phone number must be 10 digits."); return; }
+
+    // Validate password using getPasswordErrors
+    const pwErrors = getPasswordErrors(regPassword);
+    if (pwErrors.length > 0) {
+      setError("Password must include: " + pwErrors.join(", ") + "."); return;
+    }
+    if (regPassword !== regConfirm) {
+      setError("Your password doesn't match. Please re-enter."); return;
+    }
+
     setLoading(true);
     try {
       await api.post("/users/register", { name: regName, email: regEmail, phone: regPhone, password: regPassword, role: "USER" });
@@ -147,7 +144,7 @@ export default function LoginPage() {
     } finally { setLoading(false); }
   };
 
-  // ── User Forgot — Step 1
+  // ── User Forgot — Step 1 ──────────────────────────────────
   const handleSendCode = async (e) => {
     e.preventDefault(); clearMessages();
     if (!fpEmail) { setError("Please enter your email address."); return; }
@@ -161,7 +158,7 @@ export default function LoginPage() {
     } finally { setLoading(false); }
   };
 
-  // ── User Forgot — Step 2
+  // ── User Forgot — Step 2 ──────────────────────────────────
   const handleVerifyCode = async (e) => {
     e.preventDefault(); clearMessages();
     if (!fpCode || fpCode.length < 4) { setError("Please enter the verification code."); return; }
@@ -174,7 +171,7 @@ export default function LoginPage() {
     } finally { setLoading(false); }
   };
 
-  // ── User Forgot — Step 3
+  // ── User Forgot — Step 3 ──────────────────────────────────
   const handleResetPassword = async (e) => {
     e.preventDefault(); clearMessages();
     if (!fpNewPw || !fpConfirmPw)  { setError("Please fill in all fields."); return; }
@@ -190,38 +187,32 @@ export default function LoginPage() {
     } finally { setLoading(false); }
   };
 
-  // ── Admin Forgot — Step 1: generate code locally (no real email)
+  // ── Admin Forgot — Step 1 ─────────────────────────────────
   const handleAdminSendCode = (e) => {
     e.preventDefault(); clearMessages();
-    // Generate a 6-digit code and store it in state
     const code = String(100000 + Math.floor(Math.random() * 900000));
     setSentCode(code);
     setSuccess(`Your verification code is: ${code}`);
-    // Auto move to verify step after short delay
     setTimeout(() => switchMode("admin-forgot-verify"), 1800);
   };
 
-  // ── Admin Forgot — Step 2: verify code against generated code
+  // ── Admin Forgot — Step 2 ─────────────────────────────────
   const handleAdminVerifyCode = (e) => {
     e.preventDefault(); clearMessages();
     if (!adminFpCode || adminFpCode.length < 4) { setError("Please enter the verification code."); return; }
-    if (adminFpCode.trim() !== sentCode) {
-      setError("Invalid verification code. Please check and try again.");
-      return;
-    }
-    setSentCode(""); // clear used code
+    if (adminFpCode.trim() !== sentCode) { setError("Invalid verification code."); return; }
+    setSentCode("");
     switchMode("admin-forgot-reset");
   };
 
-  // ── Admin Forgot — Step 3: set new password (updates in-memory)
+  // ── Admin Forgot — Step 3 ─────────────────────────────────
   const handleAdminResetPassword = (e) => {
     e.preventDefault(); clearMessages();
-    if (!adminFpNewPw || !adminFpConfirmPw)  { setError("Please fill in all fields."); return; }
-    if (adminFpNewPw !== adminFpConfirmPw)   { setError("Passwords do not match."); return; }
-    if (adminFpNewPw.length < 6)             { setError("Password must be at least 6 characters."); return; }
-    // Update admin password in memory for this session
+    if (!adminFpNewPw || !adminFpConfirmPw) { setError("Please fill in all fields."); return; }
+    if (adminFpNewPw !== adminFpConfirmPw)  { setError("Passwords do not match."); return; }
+    if (adminFpNewPw.length < 6)            { setError("Password must be at least 6 characters."); return; }
     ADMIN_PASSWORD_CURRENT = adminFpNewPw;
-    setSuccess("Admin password updated! Please log in with your new password.");
+    setSuccess("Admin password updated! Please log in.");
     setAdminFpCode(""); setAdminFpNewPw(""); setAdminFpConfirmPw("");
     switchMode("login");
     setAccountType("admin");
@@ -236,10 +227,11 @@ export default function LoginPage() {
   return (
     <div className="auth-page">
 
-      {/* ── Login Success Toast ── */}
       {loginToast && (
         <div className="login-success-toast">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" width="20" height="20"><polyline points="20 6 9 17 4 12"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" width="20" height="20">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
           Login successful! Redirecting...
         </div>
       )}
@@ -283,38 +275,23 @@ export default function LoginPage() {
           {mode === "login" && (
             <div className="auth-form-wrap">
               <h2 className="auth-welcome">Welcome</h2>
-              <p className="auth-welcome-sub">
-                {accountType === "admin" ? "Admin login" : "Login or create a new account"}
-              </p>
-
+              <p className="auth-welcome-sub">{accountType === "admin" ? "Admin login" : "Login or create a new account"}</p>
               <div className="auth-tabs">
                 <button className="auth-tab active">Login</button>
                 {accountType !== "admin" && (
                   <button className="auth-tab" onClick={() => switchMode("register")}>Register</button>
                 )}
               </div>
-
               <div className="account-type-section">
                 <p className="account-type-label">Account Type</p>
                 <div className="account-type-btns">
-                  <button className={`account-type-btn ${accountType === "user" ? "active" : ""}`} onClick={() => handleAccountTypeSwitch("user")}>
-                    <span>👤</span> User
-                  </button>
-                  <button className={`account-type-btn ${accountType === "admin" ? "active" : ""}`} onClick={() => handleAccountTypeSwitch("admin")}>
-                    <span>🛡️</span> Admin
-                  </button>
+                  <button className={`account-type-btn ${accountType === "user" ? "active" : ""}`} onClick={() => handleAccountTypeSwitch("user")}><span>👤</span> User</button>
+                  <button className={`account-type-btn ${accountType === "admin" ? "active" : ""}`} onClick={() => handleAccountTypeSwitch("admin")}><span>🛡️</span> Admin</button>
                 </div>
               </div>
-
-              {accountType === "admin" && (
-                <div className="auth-admin-notice">
-                  🛡️ Admin access is restricted. Use authorised credentials only.
-                </div>
-              )}
-
+              {accountType === "admin" && <div className="auth-admin-notice">🛡️ Admin access is restricted. Use authorised credentials only.</div>}
               {error   && <div className="auth-error">⚠️ {error}</div>}
               {success && <div className="auth-success">✅ {success}</div>}
-
               <form onSubmit={handleLogin}>
                 <div className="auth-field">
                   <label>Email</label>
@@ -334,28 +311,20 @@ export default function LoginPage() {
                   {loading ? "Logging in..." : "Login"}
                 </button>
               </form>
-
               <div className="auth-links">
                 {accountType === "admin" ? (
-                  <button className="auth-link-btn" onClick={() => switchMode("admin-forgot-email")}>
-                    Forgot Password?
-                  </button>
+                  <button className="auth-link-btn" onClick={() => switchMode("admin-forgot-email")}>Forgot Password?</button>
                 ) : (
                   <>
-                    <button className="auth-link-btn" onClick={() => switchMode("forgot-email")}>
-                      Forgot Password?
-                    </button>
-                    <span className="auth-link-text">
-                      Don't have an account?{" "}
-                      <button className="auth-link-btn inline" onClick={() => switchMode("register")}>Register</button>
-                    </span>
+                    <button className="auth-link-btn" onClick={() => switchMode("forgot-email")}>Forgot Password?</button>
+                    <span className="auth-link-text">Don't have an account?{" "}<button className="auth-link-btn inline" onClick={() => switchMode("register")}>Register</button></span>
                   </>
                 )}
               </div>
             </div>
           )}
 
-          {/* ───── REGISTER (User only) ───── */}
+          {/* ───── REGISTER ───── */}
           {mode === "register" && (
             <div className="auth-form-wrap">
               <h2 className="auth-welcome">Welcome</h2>
@@ -393,17 +362,23 @@ export default function LoginPage() {
                       {showRegPw ? <EyeOpen /> : <EyeClosed />}
                     </button>
                   </div>
-                  {/* Password requirements */}
+                  {/* Live password requirements checklist */}
                   {regPassword && (
                     <div className="pw-requirements">
                       <span className={regPassword.length >= 8 ? "req-met" : "req-unmet"}>
                         {regPassword.length >= 8 ? "✓" : "✗"} At least 8 characters
                       </span>
                       <span className={/[0-9]/.test(regPassword) ? "req-met" : "req-unmet"}>
-                        {/[0-9]/.test(regPassword) ? "✓" : "✗"} At least one number
+                        {/[0-9]/.test(regPassword) ? "✓" : "✗"} At least one number (0-9)
                       </span>
                       <span className={/[^a-zA-Z0-9]/.test(regPassword) ? "req-met" : "req-unmet"}>
-                        {/[^a-zA-Z0-9]/.test(regPassword) ? "✓" : "✗"} At least one special character
+                        {/[^a-zA-Z0-9]/.test(regPassword) ? "✓" : "✗"} At least one special character/symbol
+                      </span>
+                      <span className={/[A-Z]/.test(regPassword) ? "req-met" : "req-unmet"}>
+                        {/[A-Z]/.test(regPassword) ? "✓" : "✗"} At least one uppercase letter (A-Z)
+                      </span>
+                      <span className={/[a-z]/.test(regPassword) ? "req-met" : "req-unmet"}>
+                        {/[a-z]/.test(regPassword) ? "✓" : "✗"} At least one lowercase letter (a-z)
                       </span>
                     </div>
                   )}
@@ -432,10 +407,7 @@ export default function LoginPage() {
                 </button>
               </form>
               <div className="auth-links">
-                <span className="auth-link-text">
-                  Already have an account?{" "}
-                  <button className="auth-link-btn inline" onClick={() => switchMode("login")}>Login</button>
-                </span>
+                <span className="auth-link-text">Already have an account?{" "}<button className="auth-link-btn inline" onClick={() => switchMode("login")}>Login</button></span>
               </div>
             </div>
           )}
@@ -448,10 +420,8 @@ export default function LoginPage() {
               <h2 className="auth-welcome">Forgot Password?</h2>
               <p className="auth-welcome-sub">Enter your email and we'll send you a verification code.</p>
               <div className="fp-steps">
-                <div className="fp-step active"><span>1</span></div>
-                <div className="fp-step-line"/>
-                <div className="fp-step"><span>2</span></div>
-                <div className="fp-step-line"/>
+                <div className="fp-step active"><span>1</span></div><div className="fp-step-line"/>
+                <div className="fp-step"><span>2</span></div><div className="fp-step-line"/>
                 <div className="fp-step"><span>3</span></div>
               </div>
               {error   && <div className="auth-error">⚠️ {error}</div>}
@@ -462,8 +432,7 @@ export default function LoginPage() {
                   <input type="email" placeholder="Enter your registered email" value={fpEmail} onChange={e => setFpEmail(e.target.value)} />
                 </div>
                 <button className="auth-submit-btn" type="submit" disabled={loading}>
-                  {loading && <span className="btn-spinner" />}
-                  {loading ? "Sending Code..." : "Send Verification Code →"}
+                  {loading && <span className="btn-spinner" />}{loading ? "Sending Code..." : "Send Verification Code →"}
                 </button>
               </form>
             </div>
@@ -477,10 +446,8 @@ export default function LoginPage() {
               <h2 className="auth-welcome">Enter Verification Code</h2>
               <p className="auth-welcome-sub">We sent a code to <strong>{fpEmail}</strong>. Check your inbox.</p>
               <div className="fp-steps">
-                <div className="fp-step done"><span>✓</span></div>
-                <div className="fp-step-line active"/>
-                <div className="fp-step active"><span>2</span></div>
-                <div className="fp-step-line"/>
+                <div className="fp-step done"><span>✓</span></div><div className="fp-step-line active"/>
+                <div className="fp-step active"><span>2</span></div><div className="fp-step-line"/>
                 <div className="fp-step"><span>3</span></div>
               </div>
               {error   && <div className="auth-error">⚠️ {error}</div>}
@@ -491,15 +458,11 @@ export default function LoginPage() {
                   <input type="text" placeholder="Enter the code from your email" maxLength={8} value={fpCode} onChange={e => setFpCode(e.target.value)} className="code-input" />
                 </div>
                 <button className="auth-submit-btn" type="submit" disabled={loading}>
-                  {loading && <span className="btn-spinner" />}
-                  {loading ? "Verifying..." : "Verify Code →"}
+                  {loading && <span className="btn-spinner" />}{loading ? "Verifying..." : "Verify Code →"}
                 </button>
               </form>
               <div className="auth-links">
-                <span className="auth-link-text">
-                  Didn't receive a code?{" "}
-                  <button className="auth-link-btn inline" onClick={handleSendCode}>Resend</button>
-                </span>
+                <span className="auth-link-text">Didn't receive a code?{" "}<button className="auth-link-btn inline" onClick={handleSendCode}>Resend</button></span>
               </div>
             </div>
           )}
@@ -511,10 +474,8 @@ export default function LoginPage() {
               <h2 className="auth-welcome">Reset Password</h2>
               <p className="auth-welcome-sub">Create a strong new password for your account.</p>
               <div className="fp-steps">
-                <div className="fp-step done"><span>✓</span></div>
-                <div className="fp-step-line active"/>
-                <div className="fp-step done"><span>✓</span></div>
-                <div className="fp-step-line active"/>
+                <div className="fp-step done"><span>✓</span></div><div className="fp-step-line active"/>
+                <div className="fp-step done"><span>✓</span></div><div className="fp-step-line active"/>
                 <div className="fp-step active"><span>3</span></div>
               </div>
               {error && <div className="auth-error">⚠️ {error}</div>}
@@ -533,8 +494,7 @@ export default function LoginPage() {
                   <input type="password" placeholder="Confirm new password" value={fpConfirmPw} onChange={e => setFpConfirmPw(e.target.value)} />
                 </div>
                 <button className="auth-submit-btn" type="submit" disabled={loading}>
-                  {loading && <span className="btn-spinner" />}
-                  {loading ? "Saving..." : "Save New Password ✓"}
+                  {loading && <span className="btn-spinner" />}{loading ? "Saving..." : "Save New Password ✓"}
                 </button>
               </form>
             </div>
@@ -548,10 +508,8 @@ export default function LoginPage() {
               <h2 className="auth-welcome">Forgot Password?</h2>
               <p className="auth-welcome-sub">Enter your email and we'll send you a verification code.</p>
               <div className="fp-steps">
-                <div className="fp-step active"><span>1</span></div>
-                <div className="fp-step-line"/>
-                <div className="fp-step"><span>2</span></div>
-                <div className="fp-step-line"/>
+                <div className="fp-step active"><span>1</span></div><div className="fp-step-line"/>
+                <div className="fp-step"><span>2</span></div><div className="fp-step-line"/>
                 <div className="fp-step"><span>3</span></div>
               </div>
               {error   && <div className="auth-error">⚠️ {error}</div>}
@@ -559,14 +517,10 @@ export default function LoginPage() {
               <form onSubmit={handleAdminSendCode}>
                 <div className="auth-field">
                   <label>Email Address</label>
-                  <input
-                    type="email"
-                    placeholder="Enter your registered email"
-                  />
+                  <input type="email" placeholder="Enter your registered email" />
                 </div>
                 <button className="auth-submit-btn" type="submit" disabled={loading}>
-                  {loading && <span className="btn-spinner" />}
-                  {loading ? "Sending Code..." : "Send Verification Code →"}
+                  {loading && <span className="btn-spinner" />}{loading ? "Sending Code..." : "Send Verification Code →"}
                 </button>
               </form>
             </div>
@@ -581,14 +535,11 @@ export default function LoginPage() {
               <p className="auth-welcome-sub">
                 {sentCode
                   ? <>Email not configured yet. Use this code: <strong className="fallback-code">{sentCode}</strong></>
-                  : <>We sent a code to <strong>{ADMIN_EMAIL}</strong>. Check your inbox.</>
-                }
+                  : <>We sent a code to <strong>{ADMIN_EMAIL}</strong>. Check your inbox.</>}
               </p>
               <div className="fp-steps">
-                <div className="fp-step done"><span>✓</span></div>
-                <div className="fp-step-line active"/>
-                <div className="fp-step active"><span>2</span></div>
-                <div className="fp-step-line"/>
+                <div className="fp-step done"><span>✓</span></div><div className="fp-step-line active"/>
+                <div className="fp-step active"><span>2</span></div><div className="fp-step-line"/>
                 <div className="fp-step"><span>3</span></div>
               </div>
               {error   && <div className="auth-error">⚠️ {error}</div>}
@@ -596,18 +547,14 @@ export default function LoginPage() {
               <form onSubmit={handleAdminVerifyCode}>
                 <div className="auth-field">
                   <label>Verification Code</label>
-                  <input type="text" placeholder="Enter the code from your email" maxLength={8} value={adminFpCode} onChange={e => setAdminFpCode(e.target.value)} className="code-input" />
+                  <input type="text" placeholder="Enter the code" maxLength={8} value={adminFpCode} onChange={e => setAdminFpCode(e.target.value)} className="code-input" />
                 </div>
                 <button className="auth-submit-btn" type="submit" disabled={loading}>
-                  {loading && <span className="btn-spinner" />}
-                  {loading ? "Verifying..." : "Verify Code →"}
+                  {loading && <span className="btn-spinner" />}{loading ? "Verifying..." : "Verify Code →"}
                 </button>
               </form>
               <div className="auth-links">
-                <span className="auth-link-text">
-                  Didn't receive a code?{" "}
-                  <button className="auth-link-btn inline" onClick={handleAdminSendCode}>Resend</button>
-                </span>
+                <span className="auth-link-text">Didn't receive a code?{" "}<button className="auth-link-btn inline" onClick={handleAdminSendCode}>Resend</button></span>
               </div>
             </div>
           )}
@@ -619,10 +566,8 @@ export default function LoginPage() {
               <h2 className="auth-welcome">Reset Admin Password</h2>
               <p className="auth-welcome-sub">Create a new secure password for the admin account.</p>
               <div className="fp-steps">
-                <div className="fp-step done"><span>✓</span></div>
-                <div className="fp-step-line active"/>
-                <div className="fp-step done"><span>✓</span></div>
-                <div className="fp-step-line active"/>
+                <div className="fp-step done"><span>✓</span></div><div className="fp-step-line active"/>
+                <div className="fp-step done"><span>✓</span></div><div className="fp-step-line active"/>
                 <div className="fp-step active"><span>3</span></div>
               </div>
               {error && <div className="auth-error">⚠️ {error}</div>}
@@ -640,9 +585,7 @@ export default function LoginPage() {
                   <label>Confirm New Password</label>
                   <input type="password" placeholder="Confirm new password" value={adminFpConfirmPw} onChange={e => setAdminFpConfirmPw(e.target.value)} />
                 </div>
-                <button className="auth-submit-btn" type="submit">
-                  Save New Password ✓
-                </button>
+                <button className="auth-submit-btn" type="submit">Save New Password ✓</button>
               </form>
             </div>
           )}
