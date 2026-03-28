@@ -47,7 +47,8 @@ export default function LoginPage() {
   const [regPhone,    setRegPhone]    = useState("");
   const [regPassword, setRegPassword] = useState("");
   const [regConfirm,  setRegConfirm]  = useState("");
-  const [showRegPw,   setShowRegPw]   = useState(false);
+  const [showRegPw,      setShowRegPw]      = useState(false);
+  const [showRegConfirm, setShowRegConfirm] = useState(false);
 
   // User forgot password
   const [fpEmail,     setFpEmail]     = useState("");
@@ -68,6 +69,15 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
 
   const clearMessages = () => { setError(""); setSuccess(""); };
+
+  // ── Password strength validation
+  const getPasswordErrors = (pw) => {
+    const errs = [];
+    if (pw.length < 8)           errs.push("At least 8 characters");
+    if (!/[0-9]/.test(pw))       errs.push("At least one number");
+    if (!/[^a-zA-Z0-9]/.test(pw)) errs.push("At least one special character");
+    return errs;
+  };
   const switchMode    = (m)  => { setMode(m); clearMessages(); };
 
   const handleAccountTypeSwitch = (type) => {
@@ -230,7 +240,7 @@ export default function LoginPage() {
       {loginToast && (
         <div className="login-success-toast">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" width="20" height="20"><polyline points="20 6 9 17 4 12"/></svg>
-          Login successful!
+          Login successful! Redirecting...
         </div>
       )}
 
@@ -378,15 +388,43 @@ export default function LoginPage() {
                 <div className="auth-field">
                   <label>Password</label>
                   <div className="pw-wrap">
-                    <input type={showRegPw ? "text" : "password"} placeholder="Create a password" value={regPassword} onChange={e => setRegPassword(e.target.value)} />
+                    <input type={showRegPw ? "text" : "password"} placeholder="Create a password (min 8 chars)" value={regPassword} onChange={e => setRegPassword(e.target.value)} />
                     <button type="button" className="pw-toggle" onClick={() => setShowRegPw(p => !p)}>
                       {showRegPw ? <EyeOpen /> : <EyeClosed />}
                     </button>
                   </div>
+                  {/* Password requirements */}
+                  {regPassword && (
+                    <div className="pw-requirements">
+                      <span className={regPassword.length >= 8 ? "req-met" : "req-unmet"}>
+                        {regPassword.length >= 8 ? "✓" : "✗"} At least 8 characters
+                      </span>
+                      <span className={/[0-9]/.test(regPassword) ? "req-met" : "req-unmet"}>
+                        {/[0-9]/.test(regPassword) ? "✓" : "✗"} At least one number
+                      </span>
+                      <span className={/[^a-zA-Z0-9]/.test(regPassword) ? "req-met" : "req-unmet"}>
+                        {/[^a-zA-Z0-9]/.test(regPassword) ? "✓" : "✗"} At least one special character
+                      </span>
+                    </div>
+                  )}
                 </div>
                 <div className="auth-field">
                   <label>Confirm Password</label>
-                  <input type="password" placeholder="Confirm your password" value={regConfirm} onChange={e => setRegConfirm(e.target.value)} />
+                  <div className="pw-wrap">
+                    <input
+                      type={showRegConfirm ? "text" : "password"}
+                      placeholder="Confirm your password"
+                      value={regConfirm}
+                      onChange={e => setRegConfirm(e.target.value)}
+                      className={regConfirm && regConfirm !== regPassword ? "input-mismatch" : ""}
+                    />
+                    <button type="button" className="pw-toggle" onClick={() => setShowRegConfirm(p => !p)}>
+                      {showRegConfirm ? <EyeOpen /> : <EyeClosed />}
+                    </button>
+                  </div>
+                  {regConfirm && regConfirm !== regPassword && (
+                    <span className="pw-mismatch-msg">⚠ Your password doesn't match</span>
+                  )}
                 </div>
                 <button className="auth-submit-btn" type="submit" disabled={loading}>
                   {loading && <span className="btn-spinner" />}

@@ -598,3 +598,41 @@
   letter-spacing: 3px;
   margin-left: 4px;
 }
+
+/* ── Password Requirements ───────────────────────────── */
+.pw-requirements {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-top: 6px;
+  padding: 8px 10px;
+  background: #f9fafb;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.req-met {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #16a34a;
+}
+
+.req-unmet {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: #9ca3af;
+}
+
+/* ── Mismatch ────────────────────────────────────────── */
+.input-mismatch {
+  border-color: #dc2626 !important;
+  background: #fef2f2 !important;
+}
+
+.pw-mismatch-msg {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #dc2626;
+  margin-top: 4px;
+  display: block;
+}
