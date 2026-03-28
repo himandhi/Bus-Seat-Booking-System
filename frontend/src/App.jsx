@@ -1,4 +1,6 @@
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { useState } from "react";
+import SplashScreen from "./components/SplashScreen";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
 import Header from "./components/Header";
@@ -56,6 +58,13 @@ function AppContent() {
 }
 
 function App() {
+  const [splashDone, setSplashDone] = useState(false);
+
+  // Show ONLY splash screen until done — nothing else renders
+  if (!splashDone) {
+    return <SplashScreen onFinish={() => setSplashDone(true)} />;
+  }
+
   return (
     <AuthProvider>
       <BrowserRouter>
