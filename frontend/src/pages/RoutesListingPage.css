@@ -457,3 +457,16 @@
     width: 100%;
   }
 }
+
+/* ── A/C Badges ──────────────────────────────────────── */
+.rlp-tag-ac {
+  background: #dbeafe;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+}
+
+.rlp-tag-nonac {
+  background: #f3f4f6;
+  color: #6b7280;
+  border: 1px solid #e5e7eb;
+}

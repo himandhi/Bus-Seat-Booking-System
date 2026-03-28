@@ -195,7 +195,7 @@ export default function RoutesListingPage() {
                 <div className="rlp-card-top">
                   <div className="rlp-card-title-row">
                     <h3 className="rlp-card-title">
-                      {route.fromCity} - {schedule.busNumber} - {route.fromCity} - {route.toCity}
+                      {route.fromCity} - {route.toCity}
                     </h3>
                     <div className="rlp-card-price-wrap">
                       <span className="rlp-card-price">Rs {route.price?.toLocaleString() ?? "—"}</span>
@@ -204,7 +204,9 @@ export default function RoutesListingPage() {
                   </div>
 
                   <div className="rlp-card-tags">
-                    <span className="rlp-tag rlp-tag-gold">Standard</span>
+                    <span className={schedule.acType === "A/C" ? "rlp-tag rlp-tag-ac" : "rlp-tag rlp-tag-nonac"}>
+                      {schedule.acType === "A/C" ? "A/C" : "Non-A/C"}
+                    </span>
                     <span className="rlp-tag rlp-tag-blue">{schedule.busNumber}</span>
                   </div>
                 </div>
@@ -212,7 +214,7 @@ export default function RoutesListingPage() {
                 <div className="rlp-card-bottom">
                   <div className="rlp-card-time-row">
                     <div className="rlp-time-block">
-                      <span className="rlp-time">{schedule.departureTime}</span>
+                      <span className="rlp-time">{schedule.departureTime?.substring(0, 5) ?? schedule.departureTime}</span>
                       <span className="rlp-city">{route.fromCity}</span>
                     </div>
                     <div className="rlp-duration-block">

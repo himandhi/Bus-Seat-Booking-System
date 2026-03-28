@@ -86,6 +86,9 @@ function SchedulePage() {
                 <div className="schedule-bus-badge">
                   🚌 {schedule.busNumber}
                 </div>
+                <span className={schedule.acType === "A/C" ? "ac-badge ac-yes" : "ac-badge ac-no"}>
+                  {schedule.acType === "A/C" ? "A/C" : "Non-A/C"}
+                </span>
               </div>
 
               <div className="schedule-details">
@@ -97,7 +100,7 @@ function SchedulePage() {
                 <div className="schedule-detail-row">
                   <span className="detail-icon">🕐</span>
                   <span className="detail-label">Departure</span>
-                  <span className="detail-value">{schedule.departureTime}</span>
+                  <span className="detail-value">{schedule.departureTime?.substring(0, 5) ?? schedule.departureTime}</span>
                 </div>
                 <div className="schedule-detail-row">
                   <span className="detail-icon">💺</span>

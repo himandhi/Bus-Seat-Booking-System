@@ -436,3 +436,79 @@
 }
 
 .adm-btn-confirm:hover { background: #bbf7d0; }
+
+/* ── A/C Toggle in Schedule Form ─────────────────────── */
+.adm-ac-toggle {
+  display: flex;
+  gap: 8px;
+}
+
+.adm-ac-btn {
+  flex: 1;
+  padding: 0.55rem 1rem;
+  border: 1.5px solid var(--border, #e5e7eb);
+  border-radius: 8px;
+  background: var(--surface2, #f9fafb);
+  color: var(--text3, #6b7280);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.adm-ac-btn.active {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+  color: #374151;
+}
+
+.adm-ac-btn.active-ac {
+  background: #dbeafe;
+  border-color: #2563eb;
+  color: #1d4ed8;
+}
+
+/* ── A/C Badge in Schedules Table ────────────────────── */
+.ac-badge-adm {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 12px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+.ac-yes-adm {
+  background: #dbeafe;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+}
+
+.ac-no-adm {
+  background: #f3f4f6;
+  color: #6b7280;
+  border: 1px solid #e5e7eb;
+}
+
+/* ── A/C Badges (Admin) ──────────────────────────────── */
+.ac-badge-adm {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.ac-yes-adm {
+  background: #dbeafe;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+}
+
+.ac-no-adm {
+  background: #f3f4f6;
+  color: #6b7280;
+  border: 1px solid #e5e7eb;
+}

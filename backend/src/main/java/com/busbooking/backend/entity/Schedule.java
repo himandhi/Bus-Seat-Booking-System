@@ -33,6 +33,10 @@ public class Schedule {
     @Column(name = "total_seats", nullable = false)
     private Integer totalSeats;
 
+    // ── NEW: A/C or Non-A/C bus type
+    @Column(name = "ac_type", nullable = false)
+    private String acType = "Non-A/C";
+
     @OneToMany(mappedBy = "schedule")
     @JsonIgnore
     private List<Booking> bookings;

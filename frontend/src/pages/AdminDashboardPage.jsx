@@ -24,14 +24,14 @@ export default function AdminDashboardPage() {
   const [searchQuery, setSearchQuery] = useState("");
 
   // ── Add/Edit Schedule
-  const [schedForm, setSchedForm] = useState({ routeId: "", busNumber: "", totalSeats: "", departureTime: "", travelDate: "" });
+  const [schedForm, setSchedForm] = useState({ routeId: "", busNumber: "", totalSeats: "", departureTime: "", travelDate: "", acType: "Non-A/C" });
   const [editingSchedId, setEditingSchedId] = useState(null);
   const [schedMsg, setSchedMsg] = useState("");
   const [schedErr, setSchedErr] = useState("");
   const [schedLoading, setSchedLoading] = useState(false);
 
   // ── Add/Edit Route
-  const [routeForm, setRouteForm] = useState({ fromCity: "", toCity: "", price: "", duration: "" });
+  const [routeForm, setRouteForm] = useState({ fromCity: "", toCity: "", duration: "" });
   const [editingRouteId, setEditingRouteId] = useState(null);
   const [routeMsg, setRouteMsg] = useState("");
   const [routeErr, setRouteErr] = useState("");
@@ -92,6 +92,7 @@ export default function AdminDashboardPage() {
       routeId: s.route?.id ?? "",
       busNumber: s.busNumber,
       totalSeats: s.totalSeats,
+      acType: s.acType ?? "Non-A/C",
       departureTime: s.departureTime?.substring(0, 5) ?? "",
       travelDate: s.travelDate,
     });
@@ -101,7 +102,7 @@ export default function AdminDashboardPage() {
 
   const handleCancelSchedEdit = () => {
     setEditingSchedId(null);
-    setSchedForm({ routeId: "", busNumber: "", totalSeats: "", departureTime: "", travelDate: "" });
+    setSchedForm({ routeId: "", busNumber: "", totalSeats: "", departureTime: "", travelDate: "", acType: "Non-A/C" });
     setSchedMsg(""); setSchedErr("");
   };
 
@@ -117,6 +118,7 @@ export default function AdminDashboardPage() {
         routeId: Number(schedForm.routeId),
         busNumber: schedForm.busNumber,
         totalSeats: Number(schedForm.totalSeats),
+        acType: schedForm.acType,
         departureTime: schedForm.departureTime,
         travelDate: schedForm.travelDate,
       };
@@ -128,7 +130,7 @@ export default function AdminDashboardPage() {
         setSchedMsg("Schedule added successfully!");
       }
       setEditingSchedId(null);
-      setSchedForm({ routeId: "", busNumber: "", totalSeats: "", departureTime: "", travelDate: "" });
+      setSchedForm({ routeId: "", busNumber: "", totalSeats: "", departureTime: "", travelDate: "", acType: "Non-A/C" });
       await fetchAll();
     } catch (err) {
       setSchedErr(err.response?.data?.message || "Failed to save schedule.");
@@ -150,26 +152,26 @@ export default function AdminDashboardPage() {
 
   const handleEditRoute = (r) => {
     setEditingRouteId(r.id);
-    setRouteForm({ fromCity: r.fromCity, toCity: r.toCity, price: r.price, duration: r.duration });
+    setRouteForm({ fromCity: r.fromCity, toCity: r.toCity, duration: r.duration });
     setRouteMsg(""); setRouteErr("");
     document.getElementById("route-form-top")?.scrollIntoView({ behavior: "smooth" });
   };
 
   const handleCancelRouteEdit = () => {
     setEditingRouteId(null);
-    setRouteForm({ fromCity: "", toCity: "", price: "", duration: "" });
+    setRouteForm({ fromCity: "", toCity: "", duration: "" });
     setRouteMsg(""); setRouteErr("");
   };
 
   const handleSaveRoute = async e => {
     e.preventDefault();
     setRouteErr(""); setRouteMsg("");
-    if (!routeForm.fromCity || !routeForm.toCity || !routeForm.price || !routeForm.duration) {
+    if (!routeForm.fromCity || !routeForm.toCity || !routeForm.duration) {
       setRouteErr("Please fill in all fields."); return;
     }
     setRouteLoading(true);
     try {
-      const payload = { fromCity: routeForm.fromCity, toCity: routeForm.toCity, price: Number(routeForm.price), duration: routeForm.duration };
+      const payload = { fromCity: routeForm.fromCity, toCity: routeForm.toCity, duration: routeForm.duration };
       if (editingRouteId) {
         await api.put(`/routes/${editingRouteId}`, payload);
         setRouteMsg("Route updated successfully!");
@@ -178,7 +180,7 @@ export default function AdminDashboardPage() {
         setRouteMsg("Route added successfully!");
       }
       setEditingRouteId(null);
-      setRouteForm({ fromCity: "", toCity: "", price: "", duration: "" });
+      setRouteForm({ fromCity: "", toCity: "", duration: "" });
       await fetchAll();
     } catch (err) {
       setRouteErr(err.response?.data?.message || "Failed to save route.");
@@ -304,7 +306,14 @@ export default function AdminDashboardPage() {
                         <td>{b.passengerName}</td>
                         <td>{b.phoneNumber}</td>
                         <td>{b.schedule?.route ? `${b.schedule.route.fromCity} → ${b.schedule.route.toCity}` : "—"}</td>
-                        <td>{b.schedule?.busNumber ?? "—"}</td>
+                        <td>
+                          <div style={{display:"flex", alignItems:"center", gap:"6px"}}>
+                            {b.schedule?.busNumber ?? "—"}
+                            <span className={b.schedule?.acType === "A/C" ? "ac-badge-adm ac-yes-adm" : "ac-badge-adm ac-no-adm"}>
+                              {b.schedule?.acType === "A/C" ? "A/C" : "Non-A/C"}
+                            </span>
+                          </div>
+                        </td>
                         <td>{b.schedule?.travelDate ?? "—"}</td>
                         <td><span className="adm-seat-badge">#{b.seatNumber}</span></td>
                         <td>Rs. {(b.totalPrice || 0).toLocaleString()}</td>
@@ -359,6 +368,7 @@ export default function AdminDashboardPage() {
                   <label>Total Seats</label>
                   <input name="totalSeats" type="number" placeholder="e.g. 40" value={schedForm.totalSeats} onChange={handleSchedChange} min="1" />
                 </div>
+
                 <div className="adm-field">
                   <label>Departure Time</label>
                   <input name="departureTime" type="time" value={schedForm.departureTime} onChange={handleSchedChange} />
@@ -366,6 +376,13 @@ export default function AdminDashboardPage() {
                 <div className="adm-field">
                   <label>Travel Date</label>
                   <input name="travelDate" type="date" value={schedForm.travelDate} onChange={handleSchedChange} min={new Date().toISOString().split("T")[0]} />
+                </div>
+                <div className="adm-field">
+                  <label>Bus Type</label>
+                  <select name="acType" value={schedForm.acType} onChange={handleSchedChange}>
+                    <option value="Non-A/C">Non-A/C</option>
+                    <option value="A/C">A/C</option>
+                  </select>
                 </div>
                 <div className="adm-field adm-field-full adm-form-actions">
                   <button type="submit" className="adm-submit-btn" disabled={schedLoading}>
@@ -386,9 +403,14 @@ export default function AdminDashboardPage() {
                   {schedules.map(s => (
                     <tr key={s.id}>
                       <td>{s.route ? `${s.route.fromCity} → ${s.route.toCity}` : "—"}</td>
-                      <td><span className="adm-booking-id">{s.busNumber}</span></td>
+                      <td>
+                        <span className="adm-booking-id">{s.busNumber}</span>
+                        <span className={s.acType === "A/C" ? "ac-badge-adm ac-yes-adm" : "ac-badge-adm ac-no-adm"}>
+                          {s.acType === "A/C" ? "A/C" : "Non-A/C"}
+                        </span>
+                      </td>
                       <td>{s.travelDate}</td>
-                      <td>{s.departureTime}</td>
+                      <td>{s.departureTime?.substring(0, 5) ?? s.departureTime}</td>
                       <td>{s.totalSeats}</td>
                       <td>
                         <div className="adm-action-btns">
@@ -426,10 +448,7 @@ export default function AdminDashboardPage() {
                   <label>To City</label>
                   <input name="toCity" type="text" placeholder="e.g. Kandy" value={routeForm.toCity} onChange={handleRouteChange} />
                 </div>
-                <div className="adm-field">
-                  <label>Price (Rs.)</label>
-                  <input name="price" type="number" placeholder="e.g. 500" value={routeForm.price} onChange={handleRouteChange} min="1" />
-                </div>
+
                 <div className="adm-field">
                   <label>Duration</label>
                   <input name="duration" type="text" placeholder="e.g. 2h 30m" value={routeForm.duration} onChange={handleRouteChange} />
@@ -448,13 +467,12 @@ export default function AdminDashboardPage() {
             {/* Table */}
             <div className="adm-table-wrap">
               <table className="adm-table">
-                <thead><tr><th>From</th><th>To</th><th>Price</th><th>Duration</th><th>Actions</th></tr></thead>
+                <thead><tr><th>From</th><th>To</th><th>Duration</th><th>Actions</th></tr></thead>
                 <tbody>
                   {routes.map(r => (
                     <tr key={r.id}>
                       <td>{r.fromCity}</td>
                       <td>{r.toCity}</td>
-                      <td>Rs. {r.price?.toLocaleString()}</td>
                       <td>{r.duration}</td>
                       <td>
                         <div className="adm-action-btns">

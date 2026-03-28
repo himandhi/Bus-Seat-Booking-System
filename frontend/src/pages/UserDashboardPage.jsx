@@ -198,7 +198,7 @@ export default function UserDashboardPage() {
                       <td>{b.schedule?.route?.fromCity ?? "—"}</td>
                       <td>{b.schedule?.route?.toCity ?? "—"}</td>
                       <td>{b.schedule?.travelDate ?? "—"}</td>
-                      <td>{b.schedule?.departureTime ?? "—"}</td>
+                      <td>{b.schedule?.departureTime?.substring(0, 5) ?? "—"}</td>
                       <td><span className="udp-seat">#{b.seatNumber}</span></td>
                       <td>Rs. {(b.totalPrice || 0).toLocaleString()}</td>
                       <td>Rs. {(b.advancePayment || 0).toLocaleString()}</td>

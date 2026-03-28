@@ -190,7 +190,12 @@ function SeatBookingPage() {
               )}
               <div className="info-row">
                 <span className="info-label">Bus Number</span>
-                <span className="info-value bus-badge">{schedule.busNumber}</span>
+                <div style={{display:"flex", alignItems:"center", gap:"8px"}}>
+                  <span className="info-value bus-badge">{schedule.busNumber}</span>
+                  <span className={schedule.acType === "A/C" ? "ac-badge ac-yes" : "ac-badge ac-no"}>
+                    {schedule.acType === "A/C" ? "A/C" : "Non-A/C"}
+                  </span>
+                </div>
               </div>
               <div className="info-row">
                 <span className="info-label">📅 Travel Date</span>
@@ -198,7 +203,7 @@ function SeatBookingPage() {
               </div>
               <div className="info-row">
                 <span className="info-label">🕐 Departure</span>
-                <span className="info-value">{schedule.departureTime}</span>
+                <span className="info-value">{schedule.departureTime?.substring(0, 5) ?? schedule.departureTime}</span>
               </div>
               <div className="info-row">
                 <span className="info-label">💺 Total Seats</span>
