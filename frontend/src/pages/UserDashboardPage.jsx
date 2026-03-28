@@ -175,6 +175,8 @@ export default function UserDashboardPage() {
                   <th>REF Number</th>
                   <th>Starting Point</th>
                   <th>Dropping Point</th>
+                  <th>Bus Number</th>
+                  <th>Bus Type</th>
                   <th>Journey Date</th>
                   <th>Journey Start Time</th>
                   <th>Booked Seats</th>
@@ -187,7 +189,7 @@ export default function UserDashboardPage() {
               <tbody>
                 {bookings.length === 0 ? (
                   <tr>
-                    <td colSpan="10" className="udp-empty-cell">
+                    <td colSpan="12" className="udp-empty-cell">
                       No booked tickets found. Book your first ticket using the <strong>Buy Tickets</strong> button above!
                     </td>
                   </tr>
@@ -197,6 +199,12 @@ export default function UserDashboardPage() {
                       <td><span className="udp-ref">{b.bookingId}</span></td>
                       <td>{b.schedule?.route?.fromCity ?? "—"}</td>
                       <td>{b.schedule?.route?.toCity ?? "—"}</td>
+                      <td><span className="udp-bus-num">{b.schedule?.busNumber ?? "—"}</span></td>
+                      <td>
+                        <span className={b.schedule?.acType === "A/C" ? "udp-ac-badge udp-ac-yes" : "udp-ac-badge udp-ac-no"}>
+                          {b.schedule?.acType ?? "Non-A/C"}
+                        </span>
+                      </td>
                       <td>{b.schedule?.travelDate ?? "—"}</td>
                       <td>{b.schedule?.departureTime?.substring(0, 5) ?? "—"}</td>
                       <td><span className="udp-seat">#{b.seatNumber}</span></td>
