@@ -88,21 +88,24 @@ function SeatBookingPage() {
     try {
       setSubmitLoading(true);
 
-      // Book each selected seat separately
-      const bookingPromises = selectedSeats.map(seatNumber =>
-        api.post("/bookings", {
-          passengerName,
-          phoneNumber,
-          scheduleId: Number(scheduleId),
-          seatNumber,
-          advancePayment: Math.round(pricePerSeat * ADVANCE_PERCENT),
-          payAtBus: pricePerSeat - Math.round(pricePerSeat * ADVANCE_PERCENT),
-          totalPrice: pricePerSeat,
-          userId: user?.id ?? null,
-        })
-      );
+      // ONE booking for all selected seats together
+      const totalPriceAll = pricePerSeat * selectedSeats.length;
+      const advanceAll    = Math.round(totalPriceAll * ADVANCE_PERCENT);
+      const payAtBusAll   = totalPriceAll - advanceAll;
 
-      const responses = await Promise.all(bookingPromises);
+      const response = await api.post("/bookings", {
+        passengerName,
+        phoneNumber,
+        scheduleId:    Number(scheduleId),
+        seatNumber:    selectedSeats[0],       // primary (legacy)
+        seatNumbers:   selectedSeats,          // all seats as list
+        advancePayment: advanceAll,
+        payAtBus:       payAtBusAll,
+        totalPrice:     totalPriceAll,
+        userId:         user?.id ?? null,
+      });
+
+      const responses = [response];
       await fetchBookedSeats();
 
       navigate("/booking-success", {

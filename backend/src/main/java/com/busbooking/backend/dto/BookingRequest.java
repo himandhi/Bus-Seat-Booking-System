@@ -3,6 +3,7 @@ package com.busbooking.backend.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import java.util.List;
 
 @Data
 public class BookingRequest {
@@ -17,7 +18,9 @@ public class BookingRequest {
     private Long scheduleId;
 
     @NotNull(message = "Seat number is required")
-    private Integer seatNumber;
+    private Integer seatNumber;       // primary seat (legacy, backward compatible)
+
+    private List<Integer> seatNumbers; // ── NEW: all selected seats as a list e.g. [2, 5, 8]
 
     private int advancePayment;
     private int payAtBus;

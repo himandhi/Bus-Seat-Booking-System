@@ -315,7 +315,13 @@ export default function AdminDashboardPage() {
                           </div>
                         </td>
                         <td>{b.schedule?.travelDate ?? "—"}</td>
-                        <td><span className="adm-seat-badge">#{b.seatNumber}</span></td>
+                        <td>
+                          <span className="adm-seat-badge">
+                            {b.seatNumbers && b.seatNumbers.trim() !== ""
+                              ? b.seatNumbers.split(",").map(s => `#${s.trim()}`).join(", ")
+                              : b.seatNumber ? `#${b.seatNumber}` : "—"}
+                          </span>
+                        </td>
                         <td>Rs. {(b.totalPrice || 0).toLocaleString()}</td>
                         <td>Rs. {(b.advancePayment || 0).toLocaleString()}</td>
                         <td><span className={`adm-status adm-status-${b.status?.toLowerCase()}`}>{b.status}</span></td>

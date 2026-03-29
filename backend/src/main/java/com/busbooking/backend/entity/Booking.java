@@ -25,8 +25,13 @@ public class Booking {
     @JoinColumn(name = "schedule_id", nullable = false)
     private Schedule schedule;
 
+    // ── Legacy single seat (kept for backward compatibility)
     @Column(name = "seat_number", nullable = false)
     private Integer seatNumber;
+
+    // ── NEW: comma-separated seat numbers e.g. "2,5,8"
+    @Column(name = "seat_numbers")
+    private String seatNumbers;
 
     @Column(name = "status", nullable = false)
     private String status;
