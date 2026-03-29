@@ -1,6 +1,7 @@
 package com.busbooking.backend.exception;
 
 import com.busbooking.backend.dto.ApiResponse;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -20,6 +21,19 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(new ApiResponse(ex.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ApiResponse> handleDataIntegrity(DataIntegrityViolationException ex) {
+        return new ResponseEntity<>(
+                new ApiResponse(extractDuplicateMessage(ex.getMessage())),
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ApiResponse> handleRuntimeException(RuntimeException ex) {
+        return new ResponseEntity<>(new ApiResponse(ex.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse> handleValidation(MethodArgumentNotValidException ex) {
         String message = ex.getBindingResult().getFieldError() != null
@@ -28,9 +42,43 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(new ApiResponse(message), HttpStatus.BAD_REQUEST);
     }
 
+    // ── Catches ALL other exceptions including wrapped DB exceptions ──────
+    // e.g. TransactionSystemException wrapping DataIntegrityViolationException
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse> handleGeneral(Exception ex) {
-        return new ResponseEntity<>(new ApiResponse("Something went wrong: " + ex.getMessage()),
-                HttpStatus.INTERNAL_SERVER_ERROR);
+        // Walk the entire cause chain looking for a DB constraint violation
+        Throwable cause = ex;
+        while (cause != null) {
+            String msg = cause.getMessage();
+            if (msg != null && (
+                    msg.contains("Duplicate entry") ||
+                            msg.contains("unique_phone") ||
+                            msg.contains("unique_email") ||
+                            msg.contains("constraint")
+            )) {
+                return new ResponseEntity<>(
+                        new ApiResponse(extractDuplicateMessage(msg)),
+                        HttpStatus.BAD_REQUEST
+                );
+            }
+            cause = cause.getCause();
+        }
+        return new ResponseEntity<>(
+                new ApiResponse("Something went wrong. Please try again."),
+                HttpStatus.INTERNAL_SERVER_ERROR
+        );
+    }
+
+    // ── Helper: converts raw DB constraint message into friendly message ──
+    private String extractDuplicateMessage(String msg) {
+        if (msg == null) return "Duplicate entry — record already exists.";
+        String lower = msg.toLowerCase();
+        if (lower.contains("unique_phone") || lower.contains("phone")) {
+            return "Phone number already registered.";
+        }
+        if (lower.contains("email")) {
+            return "Email already registered.";
+        }
+        return "Duplicate entry — this record already exists.";
     }
 }

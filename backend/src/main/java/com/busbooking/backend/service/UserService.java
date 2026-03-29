@@ -14,32 +14,41 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    // Register new user
+    // ── Register with proper duplicate checks BEFORE saving ──
     public User register(User user) {
-        if (userRepository.existsByEmail(user.getEmail())) {
+        boolean emailExists = userRepository.existsByEmail(user.getEmail());
+        boolean phoneExists = userRepository.existsByPhone(user.getPhone());
+
+        // Both email AND phone already exist → user already exists
+        if (emailExists && phoneExists) {
+            throw new RuntimeException("This user already exists.");
+        }
+        // Only email already taken
+        if (emailExists) {
             throw new RuntimeException("Email already registered.");
         }
-        // Use the role sent from frontend (USER or ADMIN)
-        // If no role provided, default to USER
-        if (user.getRole() == null || user.getRole().isBlank()) {
-            user.setRole("USER");
+        // Only phone already taken
+        if (phoneExists) {
+            throw new RuntimeException("Phone number already registered.");
         }
 
+        user.setRole("USER");
+        // TODO: hash password with BCrypt before saving
         return userRepository.save(user);
     }
 
-    // Login
+    // ── Login ─────────────────────────────────────────────────
     public User login(String email, String password) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Invalid email or password."));
-
+        // TODO: use BCrypt to compare hashed password
         if (!user.getPassword().equals(password)) {
             throw new RuntimeException("Invalid email or password.");
         }
         return user;
     }
 
-    // Update profile
+    // ── Update Profile ────────────────────────────────────────
     public User updateProfile(Long id, String name, String email, String phone) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found."));
@@ -49,11 +58,11 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    // Change password
+    // ── Change Password ───────────────────────────────────────
     public void changePassword(Long id, String currentPassword, String newPassword) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found."));
-        
+        // TODO: use BCrypt to compare hashed password
         if (!user.getPassword().equals(currentPassword)) {
             throw new RuntimeException("Current password is incorrect.");
         }

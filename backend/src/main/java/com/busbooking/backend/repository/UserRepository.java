@@ -7,4 +7,7 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
     boolean existsByEmail(String email);
+
+    // ── NEW: needed for phone duplicate check ──
+    boolean existsByPhone(String phone);
 }

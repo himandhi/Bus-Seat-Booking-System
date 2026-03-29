@@ -140,7 +140,8 @@ export default function LoginPage() {
       setSuccess("Account created successfully! Please log in.");
       switchMode("login");
     } catch (err) {
-      setError(err.response?.data?.message || "Registration failed.");
+      const msg = err.response?.data?.message || err.response?.data?.error || "Registration failed. Please try again.";
+      setError(msg);
     } finally { setLoading(false); }
   };
 
