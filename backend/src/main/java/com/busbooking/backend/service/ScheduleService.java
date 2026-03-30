@@ -41,6 +41,8 @@ public class ScheduleService {
         schedule.setDepartureTime(LocalTime.parse(scheduleRequest.getDepartureTime()));
         schedule.setBusNumber(scheduleRequest.getBusNumber());
         schedule.setTotalSeats(scheduleRequest.getTotalSeats());
+        schedule.setAcType(scheduleRequest.getAcType() != null ? scheduleRequest.getAcType() : "Non-A/C"); // ── NEW
+        schedule.setPrice(scheduleRequest.getPrice() != null ? scheduleRequest.getPrice() : 0);            // ── NEW
 
         return scheduleRepository.save(schedule);
     }
@@ -57,6 +59,8 @@ public class ScheduleService {
         schedule.setDepartureTime(LocalTime.parse(scheduleRequest.getDepartureTime()));
         schedule.setBusNumber(scheduleRequest.getBusNumber());
         schedule.setTotalSeats(scheduleRequest.getTotalSeats());
+        schedule.setAcType(scheduleRequest.getAcType() != null ? scheduleRequest.getAcType() : "Non-A/C"); // ── NEW
+        schedule.setPrice(scheduleRequest.getPrice() != null ? scheduleRequest.getPrice() : 0);            // ── NEW
 
         return scheduleRepository.save(schedule);
     }

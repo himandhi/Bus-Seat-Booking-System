@@ -54,7 +54,7 @@ function SeatBookingPage() {
   };
 
   // ── Price calculations
-  const pricePerSeat = schedule?.route?.price ?? 0;
+  const pricePerSeat = schedule?.price ?? schedule?.route?.price ?? 0;
   const numSeats = selectedSeats.length;
   const totalPrice = pricePerSeat * numSeats;
   const advancePayment = Math.round(totalPrice * ADVANCE_PERCENT);

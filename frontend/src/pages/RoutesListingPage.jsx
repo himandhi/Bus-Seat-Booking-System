@@ -198,7 +198,7 @@ export default function RoutesListingPage() {
                       {route.fromCity} - {route.toCity}
                     </h3>
                     <div className="rlp-card-price-wrap">
-                      <span className="rlp-card-price">Rs {route.price?.toLocaleString() ?? "—"}</span>
+                      <span className="rlp-card-price">Rs. {schedule.price?.toLocaleString() ?? route.price?.toLocaleString() ?? "—"}</span>
                       <span className="rlp-card-availability">Every day available</span>
                     </div>
                   </div>

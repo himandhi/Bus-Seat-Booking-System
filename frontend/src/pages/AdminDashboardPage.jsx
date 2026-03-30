@@ -24,7 +24,7 @@ export default function AdminDashboardPage() {
   const [searchQuery, setSearchQuery] = useState("");
 
   // ── Add/Edit Schedule
-  const [schedForm, setSchedForm] = useState({ routeId: "", busNumber: "", totalSeats: "", departureTime: "", travelDate: "", acType: "Non-A/C" });
+  const [schedForm, setSchedForm] = useState({ routeId: "", busNumber: "", totalSeats: "", departureTime: "", travelDate: "", acType: "Non-A/C", price: "" });
   const [editingSchedId, setEditingSchedId] = useState(null);
   const [schedMsg, setSchedMsg] = useState("");
   const [schedErr, setSchedErr] = useState("");
@@ -95,6 +95,7 @@ export default function AdminDashboardPage() {
       acType: s.acType ?? "Non-A/C",
       departureTime: s.departureTime?.substring(0, 5) ?? "",
       travelDate: s.travelDate,
+      price: s.price ?? "",
     });
     setSchedMsg(""); setSchedErr("");
     document.getElementById("sched-form-top")?.scrollIntoView({ behavior: "smooth" });
@@ -102,14 +103,14 @@ export default function AdminDashboardPage() {
 
   const handleCancelSchedEdit = () => {
     setEditingSchedId(null);
-    setSchedForm({ routeId: "", busNumber: "", totalSeats: "", departureTime: "", travelDate: "", acType: "Non-A/C" });
+    setSchedForm({ routeId: "", busNumber: "", totalSeats: "", departureTime: "", travelDate: "", acType: "Non-A/C", price: "" });
     setSchedMsg(""); setSchedErr("");
   };
 
   const handleSaveSchedule = async e => {
     e.preventDefault();
     setSchedErr(""); setSchedMsg("");
-    if (!schedForm.routeId || !schedForm.busNumber || !schedForm.totalSeats || !schedForm.departureTime || !schedForm.travelDate) {
+    if (!schedForm.routeId || !schedForm.busNumber || !schedForm.totalSeats || !schedForm.departureTime || !schedForm.travelDate || !schedForm.price) {
       setSchedErr("Please fill in all fields."); return;
     }
     setSchedLoading(true);
@@ -121,6 +122,7 @@ export default function AdminDashboardPage() {
         acType: schedForm.acType,
         departureTime: schedForm.departureTime,
         travelDate: schedForm.travelDate,
+        price: Number(schedForm.price),
       };
       if (editingSchedId) {
         await api.put(`/schedules/${editingSchedId}`, payload);
@@ -130,7 +132,7 @@ export default function AdminDashboardPage() {
         setSchedMsg("Schedule added successfully!");
       }
       setEditingSchedId(null);
-      setSchedForm({ routeId: "", busNumber: "", totalSeats: "", departureTime: "", travelDate: "", acType: "Non-A/C" });
+      setSchedForm({ routeId: "", busNumber: "", totalSeats: "", departureTime: "", travelDate: "", acType: "Non-A/C", price: "" });
       await fetchAll();
     } catch (err) {
       setSchedErr(err.response?.data?.message || "Failed to save schedule.");
@@ -390,6 +392,10 @@ export default function AdminDashboardPage() {
                     <option value="A/C">A/C</option>
                   </select>
                 </div>
+                <div className="adm-field">
+                  <label>Price per Seat (Rs.)</label>
+                  <input name="price" type="number" placeholder="e.g. 500" value={schedForm.price} onChange={handleSchedChange} min="0" />
+                </div>
                 <div className="adm-field adm-field-full adm-form-actions">
                   <button type="submit" className="adm-submit-btn" disabled={schedLoading}>
                     {schedLoading ? "Saving..." : editingSchedId ? "Update Schedule" : "Add Schedule"}
@@ -404,7 +410,7 @@ export default function AdminDashboardPage() {
             {/* Table */}
             <div className="adm-table-wrap">
               <table className="adm-table">
-                <thead><tr><th>Route</th><th>Bus Number</th><th>Travel Date</th><th>Departure</th><th>Total Seats</th><th>Actions</th></tr></thead>
+                <thead><tr><th>Route</th><th>Bus Number</th><th>Travel Date</th><th>Departure</th><th>Total Seats</th><th>Price/Seat</th><th>Actions</th></tr></thead>
                 <tbody>
                   {schedules.map(s => (
                     <tr key={s.id}>
@@ -418,6 +424,7 @@ export default function AdminDashboardPage() {
                       <td>{s.travelDate}</td>
                       <td>{s.departureTime?.substring(0, 5) ?? s.departureTime}</td>
                       <td>{s.totalSeats}</td>
+                      <td><strong>Rs. {(s.price ?? 0).toLocaleString()}</strong></td>
                       <td>
                         <div className="adm-action-btns">
                           <button className="adm-btn-edit" onClick={() => handleEditSched(s)}>Edit</button>

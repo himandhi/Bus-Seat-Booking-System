@@ -21,4 +21,10 @@ public class ScheduleRequest {
 
     @NotNull(message = "Total seats is required")
     private Integer totalSeats;
+
+    // ── NEW: A/C or Non-A/C bus type
+    private String acType;
+
+    // ── NEW: Price per seat for this schedule
+    private Integer price;
 }
