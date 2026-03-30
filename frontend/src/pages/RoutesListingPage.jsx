@@ -199,7 +199,7 @@ export default function RoutesListingPage() {
                     </h3>
                     <div className="rlp-card-price-wrap">
                       <span className="rlp-card-price">Rs. {schedule.price?.toLocaleString() ?? route.price?.toLocaleString() ?? "—"}</span>
-                      <span className="rlp-card-availability">Every day available</span>
+                      <span className="rlp-card-availability">Price per seat</span>
                     </div>
                   </div>
 
